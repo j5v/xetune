@@ -13,7 +13,7 @@ app = () => {
 
   const ref = { // Reference data
     title: 'XeTune',
-    version: '2023.06.032', // YYYY.MM.<release version> - increment for each release, after changes to code, data, or documentation.
+    version: '2023.06.033', // YYYY.MM.<release version> - increment for each release, after changes to code, data, or documentation.
     logo: '', // TODO: logo design?
     uiStrings: {
       featureNotAvailable: 'This feature is not yet available',
@@ -651,7 +651,7 @@ app = () => {
 
     return t.join("\n"); // TODO: write full export text
   }
-  function harmonicsToLimit({ limit = 5, maxExponent = 3 }) {
+  function ratiosToPrimeLimit({ limit = 5, maxExponent = 3 }) {
     const primes = primesToLimit(limit);
     const dimensionCount = primes.length;
 
@@ -1819,7 +1819,7 @@ app = () => {
     geometry,
     api,
     clearLocalStorage,
-    harmonicsToLimit
+    ratiosToPrimeLimit
   }
   return interface;
 }
