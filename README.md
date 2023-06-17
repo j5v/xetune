@@ -25,7 +25,7 @@ With XeTune, you can:
 
 # Feature requests and feedback
 
-I'm open to feature requests, and have an unpublished backlog.
+I'm open to [feature requests](https://github.com/j5v/xetune/labels/enhancement), and have an unpublished backlog.
 I have no firm plans to publish XeTune on a repository, but it's a possibility in future.
 
 # Dependencies and data use
