@@ -193,7 +193,7 @@ app = () => {
   )
   const clamp = (v, min = 0, max = 1) => Math.min(max, Math.max(min, v));
   const dp = (n) => Math.floor(n * 10) * 0.1;
-  const escapeHTML = (html) => (new Option(html).innerHTML.replace(/\"/g, "&quot;")); // TODO: check if this is safely disposed.
+  const escapeHTML = (html) => (new Option(html).innerHTML.replace(/\"|<|>/g, "_")); // TODO: check if this is safely disposed.
   function subDigits(n) {
     return n.toString().split('').map((digit) => '&#x208' + digit + ';').join('');
   } // HTMLEntity
