@@ -193,7 +193,7 @@ app = () => {
   )
   const clamp = (v, min = 0, max = 1) => Math.min(max, Math.max(min, v));
   const dp = (n) => Math.floor(n * 10) * 0.1;
-  const escapeHTML = (html) => (new Option(html).innerHTML); // TODO: check if this is safely disposed.
+  const escapeHTML = (html) => (new Option(html).innerHTML.replace(/\"/g, "&quot;")); // TODO: check if this is safely disposed.
   function subDigits(n) {
     return n.toString().split('').map((digit) => '&#x208' + digit + ';').join('');
   } // HTMLEntity
@@ -933,12 +933,12 @@ app = () => {
 
         <div class="modal-row">
           <label for="dlgTuningProperties-base">Label</label>
-          <input id="dlgTuningProperties-label" multiline value="${tuning.label || ''}"></input>
+          <input id="dlgTuningProperties-label" multiline value="${escapeHTML(tuning.label) || ''}"></input>
         </div>
 
         <div class="modal-row">
           <label for="dlgTuningProperties-base">Description</label>
-          <textarea id="dlgTuningProperties-description">${tuning.description || ''}</textarea>
+          <textarea id="dlgTuningProperties-description">${escapeHTML(tuning.description) || ''}</textarea>
         </div>
 
         <hr />
