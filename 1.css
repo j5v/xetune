@@ -1,0 +1,661 @@
+/* page */
+
+html {
+	height: 100vh;
+}
+
+body {
+	--hue: 34; /* 34 = Surge orange */
+	--hue-remove: 0;
+	--hue-tuning-point: 240;
+	--scrollbar-size: 14px; /* 6px narrow; 24px standard */
+}
+
+body {
+	background-color: hsl(var(--hue), 20%, 0%);
+	color: white; /* hsl(var(--hue), 20%, 90%);*/
+	padding: 0;
+	margin: 0;
+	height: 100vh;
+	overflow: overlay;
+	font-family: 'Segoe UI', 'sans', 'Arial', 'Tahoma';
+}
+
+body::-webkit-scrollbar-track,
+body::-webkit-scrollbar-corner {
+    background-color: hsl(var(--hue), 30%, 10%);
+}
+body::-webkit-scrollbar-track {
+	-webkit-box-shadow: inset 0 0 var(--scrollbar-size) rgba(0, 0, 0, 0.3);
+}
+body::-webkit-scrollbar {
+    width: var(--scrollbar-size);
+    height: var(--scrollbar-size);
+    background-color: hsl(var(--hue), 80%, 90%);
+}
+
+body::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--hue), 10%, 20%);
+}
+
+/* Tables */
+
+table {
+	border-collapse: collapse;
+	empty-cells: show;
+	border-spacing: 1px;
+}
+
+th {
+	font-weight: 400;
+	background-color: hsla(var(--hue), 40%, 80%, 0.2);
+}
+
+th, td {
+	padding: 0.1rem 0.5rem 0.2rem 0.5rem;
+	border-style: solid;
+	border-color: black;
+}
+th.right {
+	text-align: right;
+}
+td {
+	background-color: hsla(var(--hue), 40%, 80%, 0.1);
+	text-align: center;
+}
+td.head {
+	font-weight: 700;
+	white-space: nowrap;
+}
+td.cell-equal {
+	background: black;
+	color: hsl(var(--hue), 20%, 70%);
+}
+td p:last-child {
+	margin-bottom: 0;
+}
+
+/* Tuning analysis */
+.analysis-cents {
+	color: hsl(var(--hue), 80%, 80%);
+	font-size: 80%;
+}
+.a-diff {
+	font-size: 70%;
+}
+
+/* Text content */
+
+.textSection {
+	margin-bottom: 0.2rem;
+	padding: 0.6rem 1rem 0.3rem 1rem;
+	background-color: hsl(var(--hue), 30%, 5%);
+}
+
+.title {
+	margin-top: -0.2rem;
+	font-size: 1.3rem;
+	font-weight: 600;
+	color: hsl(var(--hue), 90%, 50%);
+}
+
+.icon-logo {
+	position: relative;
+	top: 0.35rem;
+	height: 1.5rem;
+}
+.icon-logo > path {
+	fill: hsl(var(--hue), 90%, 50%);
+}
+
+a, a:visited {
+	color: hsl(var(--hue), 20%, 80%);
+}
+
+p {
+	margin: 0.3em 0 0.7em 0;
+	padding: 0;
+}
+
+.subtle {
+	opacity: 0.6;
+}
+
+.no-pointer-events {
+	pointer-events: none;
+}
+
+.right {
+	text-align: right;
+}
+
+h1 {
+	font-size: 1.3rem;
+	color: hsl(var(--hue), 50%, 70%);
+}
+h1:first-child, h2:first-child {
+	margin-top: 0;
+}
+
+h2 {
+	font-size: 1.2rem;
+	color: hsl(var(--hue), 50%, 70%);
+}
+
+table.property-form td {
+	vertical-align: baseline;
+}
+
+hr {
+	border: 1px solid hsl(var(--hue), 0%, 0%);
+}
+
+/* generic */
+.hidden {
+	display: none;
+}
+.warn, .not-available {
+	background-color: hsl(0, 50%, 10%);
+	color: hsl(0, 100%, 85%);
+	padding: 0.4rem 1rem;
+	border: 1px solid hsl(0, 50%, 20%);
+	border-radius: 0.5rem;
+}
+.hint {
+	color: hsl(var(--hue), 10%, 70%);
+	margin-left: 1rem;
+}
+.nb {
+	white-space: nowrap;
+}
+
+.buttonSVG.unavailable {
+	cursor: not-allowed;
+}
+
+.prevent-select {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.pointer-transparent {
+	pointer-events: none;
+}
+
+/* Toolbar and icons */
+.toolbar {
+	display: flex;
+	align-items: center;
+	background-color: hsl(var(--hue), 20%, 10%);
+	min-height: 2rem;
+	padding: 0.4rem 0.9rem;
+}
+.toolbar .item {
+	display: flex;
+	align-items: center;
+}
+.toolbar .item:not(:first-child) {
+	margin-left: 1.1rem;
+}
+.toolbar select, .toolbar button {
+	margin-right: 0.7rem;
+}
+.toolbar label {
+	padding-right: 0.4rem;
+}
+
+.icon {
+	position: relative;
+	top: 0.0rem;
+	width: 2.3rem;
+	height: 2.3rem;
+	margin-right: 0.4rem;
+	padding: 0.2rem 0.2rem 0.0rem 0.2rem;
+	border: 2px solid hsla(0, 0%, 0%, 1);
+	border-radius: 0.2rem;
+	background-color: hsla(240, 0%, 10%, 0.8);
+	font-size: 1.1rem;
+	color: white;
+	cursor: pointer;
+}
+
+.icon.large {
+	width: 5rem;
+	height: 5rem;
+}
+
+.iconPath.active {
+	background-color: hsl(var(--hue), 30%, 40%);
+	fill: hsl(var(--hue), 90%, 50%);
+}
+
+.iconPath {
+	fill: hsl(var(--hue), 90%, 80%);
+}
+
+.iconPath-lines {
+	stroke-width: 0.6rem;
+	stroke: hsl(var(--hue), 90%, 80%);
+	fill: none;
+}
+.iconPath-filled-lines {
+	stroke-width: 0.6rem;
+	stroke: hsl(var(--hue), 90%, 80%);
+	fill: hsl(var(--hue), 95%, 10%);
+}
+
+button {
+	padding: 0.3rem 0.8rem 0.4rem 0.8rem;
+	color: white;
+	font-family: 'Segoe UI', 'sans', 'Arial', 'Tahoma';
+	font-size: 1.1rem;
+	border-radius: 0.3rem;
+	border: 2px solid hsla(var(--hue), 70%, 70%, 0);
+	background-color: hsl(var(--hue), 20%, 25%);
+	cursor: pointer;
+}
+button:hover {
+	background-color: hsl(var(--hue), 20%, 30%);
+	border: 2px solid hsl(var(--hue), 70%, 70%);
+	outline-offset: -2px;
+}
+button.active {
+	background-color: hsl(var(--hue), 20%, 20%);
+}
+
+.toolbar button {
+	font-size: 0.9rem;
+	background-color: hsla(240, 0%, 10%, 0.8);
+	color: hsl(var(--hue), 20%, 80%);
+}
+
+.button-stack {
+	display: flex;
+	flex-direction: row;
+}
+
+.icon.add {
+	background-color: hsl(var(--hue), 95%, 10%);
+	font-size: 150%;
+	padding-top: 0.2rem;
+}
+.icon-text {
+	fill: hsl(var(--hue), 90%, 80%);
+	text-anchor: middle;
+	font-weight: 400;
+	font-size: 6.6px;
+}
+
+/* Help (and perhaps later UI )*/
+.help.cols {
+	display: flex;
+	flex-direction: row;
+}
+.help.col {
+	width: 50%;
+	padding: 0.2rem 1rem 0.6rem 1rem;
+}
+
+/* Modal */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 10; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: hsla(var(--hue), 15%, 10%, 0.8);
+}
+
+.modal-content {
+  margin: auto auto 0 auto; /* 15% from the top and centered */
+  border: 2px solid hsl(var(--hue), 20%, 0%);
+	box-shadow: 0 5px 20px 0px hsla(var(--hue), 0%, 0%, 0.4);
+	background-color: hsl(var(--hue), 15%, 10%);
+  max-width: 37rem; /* Could be more or less, depending on screen size */
+}
+
+.modal-row {
+	padding: 0.6rem 2rem 0.8rem 2rem;
+}
+.modal-row-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	min-height: 2rem;
+	padding: 1rem 2rem;
+}
+
+.modal-row.do-action {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 1rem 2rem;
+}
+
+.modal-row-header h2 {
+	margin-top: 0.8rem;
+}
+
+.modal-row textarea {
+	min-height: 4rem;
+	height: 70%;
+	width: calc(100% - 1.4rem);
+	margin: 0.6rem 1rem 0 0;
+	padding: 0.45rem 0.7rem;
+	background: black;
+	color: white;
+	border: 1px solid hsl(var(--hue), 20%, 30%);
+	border-radius: 0.3rem;
+}
+
+.button-choices button {
+	margin-right: 1rem;
+}
+
+.modal-row > label {
+	display: inline-block;
+	width: 10rem;
+}
+
+.tags {
+	display: inline;
+}
+.tag {
+	display: inline;
+	padding: 0.1rem 0.4rem;
+	border-radius: 0.15rem;
+	background-color: hsl(240, 0%, 60%);
+	font-weight: 700;
+	font-size: 0.8rem;
+}
+.tag-WIP {
+	background-color: hsl(240, 30%, 60%);
+	color: black;
+}
+
+/* Surface */
+
+.rows {
+	display: flex;
+	flex-direction: column;
+}
+.rows.center {
+	align-items: center;
+}
+.rows.center button {
+	margin-bottom: 0.5rem;
+}
+
+.columns {
+	display: flex;
+	flex-direction: row;
+}
+
+.column {
+	background-color: hsl(var(--hue), 20%, 0%);
+}
+
+.overlay-content {
+	padding: 1.2rem 1.5rem 1.1rem 1.5rem;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	background-color: hsla(var(--hue), 25%, 0%, 0.9);
+	box-shadow: 0 5px 20px 0px hsla(var(--hue), 0%, 0%, 0.4);
+}
+
+.overlay-content .info {
+	padding: 0rem 1.5rem 0rem 1.5rem;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+}
+
+.overlay-info {
+	margin-left: 1rem;
+}
+
+.overlay-content h1 {
+	margin: 0rem 0rem 0.5rem 1rem;
+}
+
+.overlay-content table {
+	border-spacing: 0px 2px;
+}
+
+.overlay-content td {
+	padding: 0.2rem 1.0rem;
+	background-color: hsl(var(--hue), 50%, 70%, 0.15);
+}
+
+
+/* Component */
+.component-displayName {
+	font-size: 0.8rem;
+	fill: hsla(var(--hue), 100%, 60%, 0.6);
+}
+.component-value {
+	font-size: 0.8rem;
+	fill: hsl(var(--hue), 100%, 60%);
+}
+.parameter-displayName {
+	font-size: 0.8rem;
+	fill: hsl(var(--hue), 50%, 80%);
+}
+.parameter-value {
+	font-size: 0.8rem;
+	fill: hsl(var(--hue), 100%, 60%);
+}
+
+/* SVG Buttons */
+.buttonSVG {
+	stroke: hsl(var(--hue), 50%, 5%);
+	stroke-width: 1;
+	fill: hsl(var(--hue), 95%, 10%);
+	cursor: pointer;
+}
+.buttonSVG:hover {
+	stroke: hsl(var(--hue), 70%, 70%);
+	stroke-width: 2;
+}
+.buttonSVG.remove {
+	fill: hsl(var(--hue-remove), 80%, 15%);
+}
+
+/* Inputs */
+
+select, input, textarea {
+	font-family: 'Segoe UI';
+	font-size: 1.0rem;
+	background: hsl(var(--hue), 0%, 10%);
+	color: hsl(var(--hue), 20%, 80%);
+	padding: 0.4rem 0.4rem;
+	border: 1px solid hsl(var(--hue), 20%, 30%);
+	border-radius: 0.25rem;
+}
+select {
+	cursor: pointer;
+}
+
+/* Tab UI */
+
+.filter-group {
+  margin : 0.5rem 0.15rem 0 1rem;
+}
+
+button.filter {
+  display          : inline-block;
+  margin           : 0 0;
+  padding          : 0.3rem 0.6rem 0.3rem 0.6rem;
+  color            : hsl(var(--hue), 90%, 90%);
+  border           : none;
+  border-radius    : 0.3rem 0.3rem 0 0;
+  background-color : hsl(var(--hue), 10%, 20%);
+  font-size        : 1.1rem;
+  cursor           : pointer;
+}
+
+button.filter:not(:last-child) {
+  margin-right : 0.4rem;
+}
+
+button.filter:not(.selected) {
+  box-shadow : inset 0px -20px 20px -20px hsl(var(--hue), 20%, 0%);
+}
+
+button.filter.selected {
+  color            : white;
+  background-color : hsla(var(--hue), 20%, 30%);
+}
+
+button.filter:hover {
+	border: none;
+}
+
+.tabs-rule {
+  width            : 100%;
+  height           : 2px;
+  background-color : hsl(var(--hue), 20%, 30%);
+}
+
+.tabs-title {
+	margin-right: 0.6rem;
+}
+
+.analysis-options {
+	margin-left: 1rem;
+}
+.analysis-options-select {
+	padding: 0.0rem 0.4rem;
+}
+
+
+/* Tuning graphs */
+
+.scale-lines {
+	stroke: hsl(var(--hue), 40%, 90%);
+	stroke-width: 1;
+}
+
+.reference-scale {
+	stroke: hsl(var(--hue), 00%, 60%);
+	stroke-width: 0.5;
+}
+.reference-scale-bg {
+	stroke: none;
+	/* fill: hsl(var(--hue), 0%, 10%); */
+}
+
+.reference-scale-lines {
+	stroke: hsl(var(--hue), 20%, 100%);
+	stroke-width: 1;
+}
+
+.reference-name {
+	fill: hsl(var(--hue), 95%, 70%);
+}
+.reference-freq {
+	fill: hsl(var(--hue), 95%, 70%);
+	font-size: 75%;
+	text-anchor: middle;
+}
+
+.tuning-name {
+	fill: hsl(var(--hue), 90%, 50%);
+}
+.tuning-name-inline {
+	color: hsl(var(--hue), 90%, 50%);
+}
+
+.tuning-scale-bg {
+	stroke: none;
+	fill: hsla(var(--hue), 30%, 13%, 0.80);
+}
+.tuning-scale-bg.selected {
+	fill: hsla(var(--hue), 30%, 24%, 0.80);
+}
+.tuning-scale-bg-reference {
+	stroke: none;
+	fill: hsl(var(--hue), 40%, 10%);
+}
+.tuning-scale-bg-reference.selected {
+	fill: hsl(var(--hue), 30%, 20%);
+}
+.tuning-scale-selection {
+	stroke: none;
+	fill: rgba(0,0,0,0.01);
+	cursor: pointer;
+}
+
+.tuning-point {
+	fill: hsla(var(--hue-tuning-point), 50%, 90%, 0.8);
+}
+
+.tuning-point-number-bg, .icon-shape-outline {
+	stroke: hsl(var(--hue), 50%, 5%);
+	stroke-width: 0.05rem;
+	fill: hsl(var(--hue), 95%, 10%);
+	cursor: pointer;
+	filter: drop-shadow(0px 2px 3px hsla(0, 0%, 0%, 0.33));
+}
+.tuning-point-number-bg.selected, .icon-shape-fill {
+	stroke: hsl(var(--hue), 30%, 70%);
+	stroke-width: 0.05rem;
+	fill: hsl(var(--hue), 90%, 30%);
+}
+
+.tuning-point-number {
+	stroke: none;
+	fill: hsl(var(--hue), 95%, 80%);
+	/* alignment-baseline: middle; // removed - unsupported - do positioning maths instead */
+	text-anchor: middle;
+	letter-spacing: -0.06rem;
+	font-weight: 700;
+	/* font-size: 0.8rem; */
+}
+.tuning-point-number.selected {
+	fill: hsl(var(--hue), 95%, 100%);
+}
+
+.tuning-point-label,
+.tuning-point-number-ratio {
+	stroke: none;
+	fill: hsl(var(--hue), 95%, 90%);
+	/* alignment-baseline: middle; // removed - unsupported - do positioning maths instead */
+	text-anchor: middle;
+	font-weight: 400;
+	/* font-size: 0.7rem; */
+}
+.tuning-point-label {
+	font-size: 0.8rem;
+}
+.tuning-point-label-bg {
+	stroke: hsl(var(--hue), 50%, 0%);
+	stroke-width: 0.5px;
+	fill: hsl(var(--hue), 95%, 5%);
+	cursor: pointer;
+}
+
+.note-number-inline {
+	display: inline-block;
+	text-align: center;
+	padding: 0rem 0.1rem 0.1rem 0.1rem;
+	margin-top: 0.2rem;
+	border-radius: 2rem;
+	border-style: solid;
+	border-color: hsl(var(--hue), 30%, 70%);
+	border-width: 0.06rem;
+	background-color: hsl(var(--hue), 90%, 30%);
+	min-width: 1.2rem;
+}
+
+/* icons */
+.icon-shape-fill {
+	stroke-width: 5;
+}
+.icon-shape-outline {
+	stroke-width: 5;
+}
