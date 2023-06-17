@@ -34,7 +34,7 @@ XeTune is a client-side web browser app, which has no external code dependencies
 
 It has the ability to read files that you drop in, interpreting them as `.scl` (Scala) files, and can export `.scl` files as downloads.
 
-The XeTune app does not transmit nor collect your data, but it stores configuration data to localStorage, which can include user-entered data in tunings, though the round trip of loading this configuration is not yet complete. Be aware that proprietary browsers, and browser plugins/extensions might transmit data.
+The XeTune app does not transmit nor collect your data, but it stores configuration data to localStorage, which can include user-entered data in tunings. Be aware that proprietary browsers, and browser plugins/extensions might transmit data.
 
 # For developers
 
