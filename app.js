@@ -13,7 +13,7 @@ app = () => {
 
   const ref = { // Reference data
     title: 'XeTune',
-    version: '2023.06.031', // YYYY.MM.<release version> - increment for each release, after changes to code, data, or documentation.
+    version: '2023.06.032', // YYYY.MM.<release version> - increment for each release, after changes to code, data, or documentation.
     logo: '', // TODO: logo design?
     uiStrings: {
       featureNotAvailable: 'This feature is not yet available',
@@ -956,9 +956,9 @@ app = () => {
     const tuning = config.tunings.find((i) => (i.id == tuningId));
 
     if (tuning) {
-      tuning.base = getElement('dlgTuningProperties-base').value;
-      tuning.label = getElement('dlgTuningProperties-label').value;
-      tuning.description = getElement('dlgTuningProperties-description').value;
+      tuning.base = escapeHTML(getElement('dlgTuningProperties-base').value);
+      tuning.label = escapeHTML(getElement('dlgTuningProperties-label').value);
+      tuning.description = escapeHTML(getElement('dlgTuningProperties-description').value);
       renderApp();
     }
   }
