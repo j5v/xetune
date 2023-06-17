@@ -165,9 +165,10 @@ app = () => {
 
   // === Setup
   function init() {
+    loadConfigFromStorage();
     addEventHandlers();
     initAnalysis();
-    addTunings();
+    if (config.tunings.length == 0) addTunings(); // demo tunings, as a starting point.
     resizeAppViewport(); // calls renderApp()
   }
   function initAnalysis() {
