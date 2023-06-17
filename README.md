@@ -1,5 +1,7 @@
 Author: John Valentine
+
 Licence: MIT. See [LICENCE.md](LICENCE.md)
+
 This text is aligned to version 2023-06-030.
 
 # About
