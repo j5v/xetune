@@ -13,7 +13,7 @@ app = () => {
 
   const ref = { // Reference data
     title: 'XeTune',
-    version: '2023.06.030', // YYYY.MM.<release version> - increment for each release, after changes to code, data, or documentation.
+    version: '2023.06.031', // YYYY.MM.<release version> - increment for each release, after changes to code, data, or documentation.
     logo: '', // TODO: logo design?
     uiStrings: {
       featureNotAvailable: 'This feature is not yet available',
@@ -1682,7 +1682,8 @@ app = () => {
           <p>Version ${ref.version}.</p>
           <h1>About</h1>
           <p>${ref.title} visualises microtonal tunings.</p>
-          <p>Learn more in the <a href="README.md" target="_AboutStickyFingers">README.md</a> file.
+          <p>Learn more: <a href="README.md" target="_AboutXeTune">README.md</a></p>
+          <p>View the source: <a href="https://github.com/j5v/xetune" target="_XeTuneSource">https://github.com/j5v/xetune</a></p>
         </div>
       </div>
     </div>
