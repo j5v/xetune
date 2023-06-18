@@ -1506,22 +1506,22 @@ app = () => {
 
     if (tuning && tuning.scaleType == ref.tuningScales.EXPONENTIAL && tuningsSelectedCount == 1) {
       // Hint: Revisit if octave tunings are no longer pure log-scale, e.g. with absolute Hz offset.
-      return analysisEDOTuningIntervalsHTML(tuning);
+      return analysisEDTuningIntervalsHTML(tuning);
     } else if (tuningsSelectedCount == 1) {
-      return analysisSingleTuningTable(tuning);
+      return analysisSingleTuningTableHTML(tuning);
     } else if (tuningsSelectedCount == 2) {
-      return analysisTwoTuningsTable(config.tunings.filter(tuning => tuning.selected));
+      return analysisTwoTuningsTableHTML(config.tunings.filter(tuning => tuning.selected));
     } else {
       return '<p>Select one or two tunings.</p>';
     }
   }
-  const analysisEDOTuningIntervalsHTML = (tuning) => {
+  const analysisEDTuningIntervalsHTML = (tuning) => {
     return `<p>Interval analysis of ED tuning: ${tuning.label}.</p><p class="not-available">${ref.uiStrings.featureNotAvailable}.</p>`;
   }
-  const analysisSingleTuningTable = (tuning) => {
+  const analysisSingleTuningTableHTML = (tuning) => {
     return `<p>Interval analysis of non-ED tuning: ${tuning.label}.</p><p class="not-available">${ref.uiStrings.featureNotAvailable}.</p>`;
   }
-  const analysisTwoTuningsTable = (tunings) => {
+  const analysisTwoTuningsTableHTML = (tunings) => {
     return `<p>Interval analysis of two tunings: ${tunings.map(tuning => tuning.label).join(', ')}.</p><p class="not-available">${ref.uiStrings.featureNotAvailable}.</p>`;
   }
   const analysisNotePropertiesHTML = () => {
