@@ -1782,8 +1782,10 @@ app = () => {
   }
 
   // report debug flags
-  if (env.devBuild) log('Log flags: ' + Object.keys(env.debug).filter((i) => env.debug[i]).join(', '));
-
+  if (env.devBuild) {
+    log('Log flags: ' + Object.keys(env.debug).filter((i) => env.debug[i]).join(', '));
+    logInfo('If the current configuration causes errors, type ui.clearLocalStorage() then refresh the page.');
+  }
   // return interface
   let interface = { // UI interface
     init,
