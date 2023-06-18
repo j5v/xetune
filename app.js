@@ -369,7 +369,7 @@ app = () => {
       if (tuning.scaleType == ref.tuningScales.IMPORT_SCL)
         tuning.label = `${tuning.id}`;
       if (tuning.scaleType == ref.tuningScales.LINEAR)
-        tuning.label = `${tuning.limit}-${ref.uiStrings.limit}`;
+        tuning.label = `${tuning.limit}i-${ref.uiStrings.limit}`;
       if (tuning.scaleType == ref.tuningScales.EXPONENTIAL)
         tuning.label = `${tuning.divisions}-${ref.uiStrings.ed}${tuning.base || 2}`; // default: assume 2x freq for repeat
     }
