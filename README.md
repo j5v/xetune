@@ -1,10 +1,4 @@
-Author: John Valentine
-
-Licence: MIT. See [LICENCE.md](LICENCE.md)
-
-This text is aligned to version 2023-06-030.
-
-# About
+> This text is aligned to version 2023-06-030.
 
 XeTune is an experimental visualiser and basic editor for multiple microtonal tunings. It runs in a web browser and doesn't need a server. You can use it at [https://johnvalentine.co.uk/app/xetune/app.html](https://johnvalentine.co.uk/app/xetune/app.html)
 

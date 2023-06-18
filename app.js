@@ -114,9 +114,9 @@ app = () => {
     reference: { // TODO: serializable to .enum.
       scaleLabel: ref.scaleViewLabels[2],
     },
+    noteRefHz: 440 * (Math.pow(2, -9/12)), // C, around 261 Hz // TODO: split to be configurable
     noteShowSubtleLinesBelowLevel: 5,
     noteShowLabelsBelowLevel: 3,
-    noteRefHz: 440 * (Math.pow(2, -9/12)), // C, around 261 Hz // TODO: split to be configurable
     nearEnoughCents: 8, // for letter labels of notes
     harmonicImportLabelLimit: 99, // TODO: make this the concern of the renderer, not the importer.
     harmonicAnalysisIntegerLimit: 89, // TODO: use limits properly
