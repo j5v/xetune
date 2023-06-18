@@ -268,10 +268,10 @@ app = () => {
   }
 
   // Storage callers: config
-  function saveAppConfiguration() {
-    Object.assign(config, JSON.parse(getElement('app-json-config').value))
-    saveConfigToStorage()
-    renderApp()
+  function saveAppConfigurationFromDlg() {
+    Object.assign(config, JSON.parse(getElement('app-json-config').value));
+    saveConfigToStorage();
+    renderApp();
   }
   function loadConfigFromStorage() {
     const configPayload = loadFromStorage(ref.localStorageKeys.appConfig)
@@ -792,7 +792,7 @@ app = () => {
           <textarea id="app-json-config" multiline>${JSON.stringify(config, null, 2)}</textarea>
         </div>
         <div class="modal-row">
-          <button onclick="ui.saveAppConfiguration()">Save JSON configuration</button>
+          <button onclick="ui.saveAppConfigurationFromDlg()">Save JSON configuration</button>
         </div>
 
       </div>
@@ -859,6 +859,7 @@ app = () => {
       const divisions = parseInt(getElement('dlgAddTuning-divisions').value, 10) || 12;
       addTuning({ base, scaleType, divisions });
     }
+    saveConfigToStorage();
     renderApp();
   }
   function addTuningDlgRenderScaleTypeOptions(scaleType) {
@@ -895,8 +896,9 @@ app = () => {
     const foundIndex = config.tunings.indexOf(found);
     if (foundIndex > -1) {
       config.tunings.splice(foundIndex, 1);
+      saveConfigToStorage();
+      renderApp();
     }
-    renderApp();
   }
   function duplicateTuning(tuningId) {
     const found = config.tunings.find((i) => (i.id == tuningId));
@@ -905,8 +907,9 @@ app = () => {
       const tuning = cloneObject(config.tunings[foundIndex]);
       tuning.id = config.nextTuningId++
       config.tunings.push(tuning);
+      saveConfigToStorage();
+      renderApp();
     }
-    renderApp();
   }
   function downloadTuning(tuningId) {
     const found = config.tunings.find((i) => (i.id == tuningId))
@@ -959,6 +962,7 @@ app = () => {
       tuning.base = escapeHTML(getElement('dlgTuningProperties-base').value);
       tuning.label = escapeHTML(getElement('dlgTuningProperties-label').value);
       tuning.description = escapeHTML(getElement('dlgTuningProperties-description').value);
+      saveConfigToStorage();
       renderApp();
     }
   }
@@ -966,6 +970,7 @@ app = () => {
     const tuning = config.tunings.find((i) => (i.id == tuningId)); // todo: refactor into new  findTuning()
     if (tuning) {
       tuning.notes = tuning.notes.filter(t => !t.selected); // TODO: separate concerns
+      saveConfigToStorage();
       renderApp();
     }
   }
@@ -1025,6 +1030,7 @@ app = () => {
     if (limit) {
       config.harmonicAnalysisIntegerLimit = limit;
       initAnalysis();
+      saveConfigToStorage();
       renderApp();
     }
   }
@@ -1782,15 +1788,17 @@ app = () => {
   }
 
   // report debug flags
-  if (env.devBuild) log('Log flags: ' + Object.keys(env.debug).filter((i) => env.debug[i]).join(', '));
-
+  if (env.devBuild) {
+    log('Log flags: ' + Object.keys(env.debug).filter((i) => env.debug[i]).join(', '));
+    logInfo('If the current configuration causes errors, type ui.clearLocalStorage() then refresh the page.');
+  }
   // return interface
   let interface = { // UI interface
     init,
 		renderApp,
     hideModal,
     showAppConfig,
-    saveAppConfiguration,
+    saveAppConfigurationFromDlg,
     toggleHelp,
     removeTuning,
     addTuningDlg,
