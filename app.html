@@ -6,5 +6,10 @@
 		<meta name="description" content="XeTune is a visualiser, analyzer, and basic editor, for multiple microtonal tunings. It runs in a web browser and doesn't need a server.">
 		<script src="app.js"></script>
 	</head>
-	<body id="body" onload="ui.init();"></body>
+	<body id="body" onload="ui.init();">
+		<div class="modal-row">
+			<p>XeTune is starting...</p>
+			<p>If this message doesn't go away, try <button class="warn" onclick="ui.clearLocalStorage()">Reset configuration to defaults</button></p>
+		</div>
+	</body>
 <html>
