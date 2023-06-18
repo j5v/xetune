@@ -40,6 +40,6 @@ The XeTune app does not transmit nor collect your data, but it stores configurat
 
 I structured this prototype project as a monolith closure with published UI methods. Internally, code is grouped by functionalies like reference data, utilities, rendering, tuning calculations, and UI events. Concerns are not as fully separated as they should be, and I'm aware that there are better ways to organize a project.
 
-I needs no preprocessing to run, but does need a full refresh to take new code changes (there's no live reload), which resets the internal state.
+It needs no preprocessing to run, but does need a full refresh to take new code changes (there's no live reload), which resets the internal state.
 
 The UI is composed using render functions, and often rendered wholesale to reflect updated state. This is efficient enough to be responsive to large and small changes.
