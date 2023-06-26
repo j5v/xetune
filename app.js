@@ -1299,57 +1299,55 @@ app = () => {
     // Draw a reference tuning scale
     const vo = tuningPointVOffset = h * 0.1;
     const tuningPointWidth = 2;
-    const scale = config.reference.scaleLabel;
-    const positions = tuning.notes.map((n) => {
+    const scaleLabel = config.reference.scaleLabel;
+    const lanes = [];
 
-      let position = 0;
-      positionOnScaleLine();
+    const positionsSVG = tuning.notes.map((n) => {
+
+      let position = positionOnScaleLine({ scaleLabel, n });
       scaledPosition = x1 + position * (x2 - x1);
       const subtleClass = (
-          (tuning.scaleType == ref.tuningScales.EXPONENTIAL) ||
-          (n.level && n.level < config.noteShowSubtleLinesBelowLevel)
-        ) ? '' : 'subtle';
+        (tuning.scaleType == ref.tuningScales.EXPONENTIAL) ||
+        (n.level && n.level < config.noteShowSubtleLinesBelowLevel)
+      ) ? '' : 'subtle';
 
-      // Only draw the notes within display viewport range
-      return (position >= 0 && position <= 1)
-        ? `
-          <path class="${(firstTuning) ? 'reference-' : ''}scale-lines ${subtleClass}" d="
-            M${scaledPosition},${(firstTuning) ? (backgroundY2) : y2}
-            L${scaledPosition},${y1}
-          " />
-          ${
-            tuningPointSVG({
-              x: scaledPosition, y: 
-              y1 + vo, 
-              w: tuningPointWidth, 
-              h: s.bodySize,
-              selected: false, 
-              note: n,
-              tuning
-            })
-          }
-        `
-        : '';
-      
-      function positionOnScaleLine() {
-        switch (scale.enum) { // todo: reduce coupling
+      if (position < 0 || position > 1) return; // Don't draw notes outside display viewport range
+
+      return `
+        <path class="${(firstTuning) ? 'reference-' : ''}scale-lines ${subtleClass}" d="
+          M${scaledPosition},${(firstTuning) ? (backgroundY2) : y2}
+          L${scaledPosition},${y1}
+        " />
+        ${
+          tuningPointSVG({
+            x: scaledPosition, y: 
+            y1 + vo, 
+            w: tuningPointWidth, 
+            h: s.bodySize,
+            selected: false, 
+            note: n,
+            tuning
+          })
+        }
+      `;
+
+      function positionOnScaleLine({ scaleLabel, n }) {
+        switch (scaleLabel.enum) { // todo: reduce coupling
           case 0:
-            position = (n.frequency - scale.min) / ( scale.max - scale.min)
-            break
+            return (n.frequency - scaleLabel.min) / ( scaleLabel.max - scaleLabel.min);
           case 1:
-            position = (n.octaves - scale.min) / ( scale.max - scale.min)
-            break
+            return (n.octaves - scaleLabel.min) / ( scaleLabel.max - scaleLabel.min);
           case 2:
             // position = (n.centsET12 - scale.min) / scale.max
-            position = (n.centsET12 - scale.min) / ( scale.max - scale.min)
-            break
+            return (n.centsET12 - scaleLabel.min) / ( scaleLabel.max - scaleLabel.min);
+          }
         }
-      }
+
     });
 
     return `
       <g>
-        ${positions}
+        ${positionsSVG}
       </g>
     `
   }
