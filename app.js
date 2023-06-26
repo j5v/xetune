@@ -1300,54 +1300,113 @@ app = () => {
     const vo = tuningPointVOffset = h * 0.1;
     const tuningPointWidth = 2;
     const scaleLabel = config.reference.scaleLabel;
-    const lanes = [];
 
-    const positionsSVG = tuning.notes.map((n) => {
+    // x positions of visible notes
+    const positionsX = [];
+    tuning.notes.forEach((note) => {
+      const position = positionOnScaleLine({ scaleLabel, note });
+      const scaledPositionX = x1 + position * (x2 - x1);
+      if (position >= 0 && position <= 1) positionsX.push({ position, scaledPositionX, note });
+    });
 
-      let position = positionOnScaleLine({ scaleLabel, n });
-      scaledPosition = x1 + position * (x2 - x1);
+    // Lines
+    const linesSVG = positionsX.map(i => {
       const subtleClass = (
         (tuning.scaleType == ref.tuningScales.EXPONENTIAL) ||
-        (n.level && n.level < config.noteShowSubtleLinesBelowLevel)
+        (i.level && i.level < config.noteShowSubtleLinesBelowLevel)
       ) ? '' : 'subtle';
-
-      if (position < 0 || position > 1) return; // Don't draw notes outside display viewport range
 
       return `
         <path class="${(firstTuning) ? 'reference-' : ''}scale-lines ${subtleClass}" d="
-          M${scaledPosition},${(firstTuning) ? (backgroundY2) : y2}
-          L${scaledPosition},${y1}
+          M${i.scaledPositionX},${(firstTuning) ? (backgroundY2) : y2}
+          L${i.scaledPositionX},${y1}
         " />
+      `
+    });
+
+    // Blobs
+    const lanes = [];
+    const laneHeight = s.bodySize * 2;
+    const maxLanes = 3;
+    const normalizedClearance = s.bodySize / (x2 - x1);
+    log({ normalizedClearance });
+
+    let offsetY = 0; // temp
+    const blobsSVG = positionsX.map(i => {
+
+
+
+      return `
         ${
           tuningPointSVG({
-            x: scaledPosition, y: 
-            y1 + vo, 
+            x: i.scaledPositionX, y: 
+            y1 + vo + offsetY, 
             w: tuningPointWidth, 
             h: s.bodySize,
             selected: false, 
-            note: n,
+            note: i.note,
             tuning
           })
         }
-      `;
+      `
 
-      function positionOnScaleLine({ scaleLabel, n }) {
-        switch (scaleLabel.enum) { // todo: reduce coupling
-          case 0:
-            return (n.frequency - scaleLabel.min) / ( scaleLabel.max - scaleLabel.min);
-          case 1:
-            return (n.octaves - scaleLabel.min) / ( scaleLabel.max - scaleLabel.min);
-          case 2:
-            // position = (n.centsET12 - scale.min) / scale.max
-            return (n.centsET12 - scaleLabel.min) / ( scaleLabel.max - scaleLabel.min);
-          }
+    });    
+
+    function positionOnScaleLine({ scaleLabel, note }) {
+      switch (scaleLabel.enum) { // todo: reduce coupling
+        case 0:
+          return (note.frequency - scaleLabel.min) / ( scaleLabel.max - scaleLabel.min);
+        case 1:
+          return (note.octaves - scaleLabel.min) / ( scaleLabel.max - scaleLabel.min);
+        case 2:
+          // position = (n.centsET12 - scale.min) / scale.max
+          return (note.centsET12 - scaleLabel.min) / ( scaleLabel.max - scaleLabel.min);
+      }
+    }
+
+/*
+    const positionsSVG = tuning.notes.map((note) => {
+
+      let position = positionOnScaleLine({ scaleLabel, n: note });
+      if (position < 0 || position > 1) return; // Don't draw notes outside display viewport range
+      const scaledPositionX = x1 + position * (x2 - x1);
+
+      let offsetY = 0;
+      let tryLane = 0;
+
+      if (lanes.length == 0) {
+        lanes.push(position);
+      } else {
+        log({ w: 'before', tryLane, sp: position - normalizedClearance, lanePos: lanes[tryLane] })
+        while (
+          tryLane <= maxLanes &&
+          (
+            ((lanes[tryLane] || 0) - position < normalizedClearance) || // position is within 'normalizedClearance' of last item in lane
+            (position <= normalizedClearance)
+          )
+        ) {
+          log({ w: '10', tryLane, sp: position - normalizedClearance, lanePos: lanes[tryLane] })
+          log('#10')
+          offsetY = tryLane * laneHeight;
+          tryLane++;
         }
+        tryLane--;
+        if (tryLane >= lanes.length) {
+          log('#11')
+        } else {
+          log('#12')
+          lanes[tryLane] = position;
+        }
+      log({ w: 'after', tryLane, offsetY, l: JSON.stringify(lanes) });
+      }
 
-    });
+      return linesSVG + blobsSVG;
 
+
+*/
     return `
       <g>
-        ${positionsSVG}
+        ${linesSVG + blobsSVG}
       </g>
     `
   }
