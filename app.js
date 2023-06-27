@@ -13,7 +13,7 @@ app = () => {
 
   const ref = { // Reference data
     title: 'XeTune',
-    version: '2023.06.034', // YYYY.MM.<release version> - increment for each release, after changes to code, data, or documentation.
+    version: '2023.06.035', // YYYY.MM.<release version> - increment for each release, after changes to code, data, or documentation.
     logo: '', // TODO: logo design?
     uiStrings: {
       featureNotAvailable: 'This feature is not yet available',
@@ -1309,6 +1309,58 @@ app = () => {
       if (position >= 0 && position <= 1) positionsX.push({ position, scaledPositionX, note });
     });
 
+
+    // Blobs
+    const lanes = [];
+    const laneHeight = s.bodySize * 1.8;
+    const maxLanes = 3;
+    const normalizedClearance = 1.45 * s.bodySize / (x2 - x1);
+    let offsetY = 0; // temp
+
+    const blobsSVG = positionsX.map(i => {
+
+      if (lanes.length == 0) {
+        lanes.push(i.position);
+      } else {
+        // iterate over lanes until we have clearance
+        let laneIndex = 0;
+        let lanePos = lanes[laneIndex];
+
+        while (
+          laneIndex < lanes.length &&
+          i.position < lanePos + normalizedClearance
+        ) {
+          laneIndex++;
+          lanePos = lanes[laneIndex];
+        }
+
+        if (laneIndex == lanes.length) {
+          lanes.push(i.position);
+        } else {
+          lanes[laneIndex] = i.position;
+        }
+        offsetY = laneIndex * laneHeight; // Math.floor(Math.random() * 3) * laneHeight; // 
+
+      }
+
+      const svg = tuningPointSVG({
+        x: i.scaledPositionX, y: 
+        y1 + vo + offsetY, 
+        w: tuningPointWidth, 
+        h: s.bodySize,
+        selected: false, 
+        note: i.note,
+        tuning
+      });
+
+      return svg;
+
+    });
+
+    const lanesHeight = (lanes.length - 1) * laneHeight;
+    const bandBottom = y2 + lanesHeight;
+
+
     // Lines
     const linesSVG = positionsX.map(i => {
       const subtleClass = (
@@ -1318,39 +1370,11 @@ app = () => {
 
       return `
         <path class="${(firstTuning) ? 'reference-' : ''}scale-lines ${subtleClass}" d="
-          M${i.scaledPositionX},${(firstTuning) ? (backgroundY2) : y2}
+          M${i.scaledPositionX},${(firstTuning) ? (backgroundY2 + 3000) : bandBottom}
           L${i.scaledPositionX},${y1}
         " />
       `
     });
-
-    // Blobs
-    const lanes = [];
-    const laneHeight = s.bodySize * 2;
-    const maxLanes = 3;
-    const normalizedClearance = s.bodySize / (x2 - x1);
-    log({ normalizedClearance });
-
-    let offsetY = 0; // temp
-    const blobsSVG = positionsX.map(i => {
-
-
-
-      return `
-        ${
-          tuningPointSVG({
-            x: i.scaledPositionX, y: 
-            y1 + vo + offsetY, 
-            w: tuningPointWidth, 
-            h: s.bodySize,
-            selected: false, 
-            note: i.note,
-            tuning
-          })
-        }
-      `
-
-    });    
 
     function positionOnScaleLine({ scaleLabel, note }) {
       switch (scaleLabel.enum) { // todo: reduce coupling
@@ -1364,51 +1388,13 @@ app = () => {
       }
     }
 
-/*
-    const positionsSVG = tuning.notes.map((note) => {
-
-      let position = positionOnScaleLine({ scaleLabel, n: note });
-      if (position < 0 || position > 1) return; // Don't draw notes outside display viewport range
-      const scaledPositionX = x1 + position * (x2 - x1);
-
-      let offsetY = 0;
-      let tryLane = 0;
-
-      if (lanes.length == 0) {
-        lanes.push(position);
-      } else {
-        log({ w: 'before', tryLane, sp: position - normalizedClearance, lanePos: lanes[tryLane] })
-        while (
-          tryLane <= maxLanes &&
-          (
-            ((lanes[tryLane] || 0) - position < normalizedClearance) || // position is within 'normalizedClearance' of last item in lane
-            (position <= normalizedClearance)
-          )
-        ) {
-          log({ w: '10', tryLane, sp: position - normalizedClearance, lanePos: lanes[tryLane] })
-          log('#10')
-          offsetY = tryLane * laneHeight;
-          tryLane++;
-        }
-        tryLane--;
-        if (tryLane >= lanes.length) {
-          log('#11')
-        } else {
-          log('#12')
-          lanes[tryLane] = position;
-        }
-      log({ w: 'after', tryLane, offsetY, l: JSON.stringify(lanes) });
-      }
-
-      return linesSVG + blobsSVG;
-
-
-*/
-    return `
+    const svg = `
       <g>
         ${linesSVG + blobsSVG}
       </g>
-    `
+    `;
+
+    return { svg, lanesHeight }
   }
   function referenceScaleSVG({x1, x2, y1, y2, h, rowLabel = '', labelX = g.pageMargin.left}) {
     // Draw a reference tuning scale
@@ -1434,19 +1420,21 @@ app = () => {
   }
   function tuningScaleSVG({ x1, x2, y1, h, tuning, labelX = g.pageMargin.left, backgroundY2, firstTuning }) {
     // Draw a reference tuning scale
-    return `
+    const noteLines = noteLinesSVG({x1, x2, y1, y2: y1 + h, h, tuning, backgroundY2, firstTuning});
+
+    const svg = `
       <g>
         <path class="tuning-scale-selection" onclick="ui.toggleTuningSelection(${tuning.id})" d="
-          M${0},${y1 + h}
+          M${0},${y1 + h + noteLines.lanesHeight}
           L${0},${y1}
           L${x2},${y1}
-          L${x2},${y1 + h}
+          L${x2},${y1 + h + noteLines.lanesHeight}
         " />
         <path class="tuning-scale-bg${firstTuning ? '-reference' : ''}${tuning.selected ? ' selected' : ''} pointer-transparent" d="
-          M${x1},${y1 + h}
+          M${x1},${y1 + h + noteLines.lanesHeight}
           L${x1},${y1}
           L${x2},${y1}
-          L${x2},${y1 + h}
+          L${x2},${y1 + h + noteLines.lanesHeight}
           " />
         <g>
           <title>${tuning.label}</title>
@@ -1459,9 +1447,11 @@ app = () => {
         </g>
         ${tuningStripButtons()}          
         }
-        ${noteLinesSVG({x1, x2, y1, y2: y1 + h, h, tuning, backgroundY2, firstTuning})}
+        ${noteLines.svg}
       </g>
     `;
+
+    return { svg, lanesHeight: noteLines.lanesHeight };
 
     function tuningStripButtons(params) {
       // row 1 (tuning) Remove, Download, Duplicate*, Properties*
@@ -1767,7 +1757,7 @@ app = () => {
       thisRowY = nextRowY;
       nextRowY += tuningBoxHeight + s.bodySize * 1;
 
-      const svg = tuningScaleSVG({
+      const tuningScale = tuningScaleSVG({
         x1: tuningBoxX1, 
         x2: g.width - g.pageMargin.right - s.bodySize * 0.5,  // allows for note circles
         y1: thisRowY, 
@@ -1777,8 +1767,9 @@ app = () => {
         firstTuning
       });
       firstTuning = false;
+      nextRowY += tuningScale.lanesHeight;
 
-      return svg;
+      return tuningScale.svg;
     }).join('');
 
     const tuningSVG = (config.tunings.length == 0) ? '' : `
