@@ -13,7 +13,7 @@ app = () => {
 
   const ref = { // Reference data
     title: 'XeTune',
-    version: '2023.06.036', // YYYY.MM.<release version> - increment for each release, after changes to code, data, or documentation.
+    version: '2023.06.037', // YYYY.MM.<release version> - increment for each release, after changes to code, data, or documentation.
     logo: '', // TODO: logo design?
     uiStrings: {
       featureNotAvailable: 'This feature is not yet available',
