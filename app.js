@@ -1732,11 +1732,9 @@ app = () => {
     <div class="textSection help" id="helpContainer">
       <div class="help cols">
         <div class="help col">
-          <p><b>${ref.title}</b> (c) John Valentine 2023.</p>
-          <p>Version ${ref.version}.</p>
           <h1>About</h1>
-          <p>${ref.title} visualises microtonal tunings.</p>
-          <p>Learn more: <a href="README.md" target="_AboutXeTune">README.md</a></p>
+          <p>${ref.title} visualises microtonal tunings. <a href="https://github.com/j5v/xetune/blob/main/README.md" target="_AboutXeTune">README.md</a> (<a href="README.md" target="_AboutXeTune">local</a>)</p>
+          <p>Version ${ref.version}. &copy; John Valentine 2023.</p>
           <p>View the source: <a href="https://github.com/j5v/xetune" target="_XeTuneSource">https://github.com/j5v/xetune</a></p>
         </div>
       </div>

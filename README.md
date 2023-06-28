@@ -35,4 +35,4 @@ I structured this prototype project as a monolith closure with published UI meth
 
 The project needs no preprocessing to run, so there is no build process.
 
-The UI is composed using render functions, and often rendered wholesale to reflect updated state. So far, this is efficient enough to be responsive to large and small changes.
+The UI is composed using render functions, and is often rendered wholesale to reflect updated state. So far, this is efficient enough to be responsive to large and small changes.
