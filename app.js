@@ -13,7 +13,7 @@ app = () => {
 
   const ref = { // Reference data
     title: 'XeTune',
-    version: '2023.06.035', // YYYY.MM.<release version> - increment for each release, after changes to code, data, or documentation.
+    version: '2023.06.036', // YYYY.MM.<release version> - increment for each release, after changes to code, data, or documentation.
     logo: '', // TODO: logo design?
     uiStrings: {
       featureNotAvailable: 'This feature is not yet available',
@@ -33,6 +33,8 @@ app = () => {
       addTuningNote: 'Add a note',
       selectAllTuningNotes: 'Select all notes',
       unselectAllTuningNotes: 'Unselect all notes',
+      tuningZoomSmaller: 'Zoom smaller',
+      tuningZoomBigger: 'Zoom bigger',
       limit: 'limit',
       ed: 'ED',
       save: 'Save',
@@ -115,8 +117,9 @@ app = () => {
       scaleLabel: ref.scaleViewLabels[2],
     },
     ui: {
-      scaleTuningSize: 24, // px. todo: get from browser default
+      scaleBlobSize: 24, // px. todo: get from browser default
       toolSize: 24,
+      textSize: 24,
     },
     noteRefHz: 440 * (Math.pow(2, -9/12)), // C, around 261 Hz // TODO: split to be configurable
     noteShowSubtleLinesBelowLevel: 5,
@@ -810,6 +813,17 @@ app = () => {
     config.reference.scaleLabel.max = maxOctave * 1200;
     renderApp();
   }
+  function tuningZoomSmaller() {
+    config.ui.scaleBlobSize = Math.max(12, config.ui.scaleBlobSize * 0.8);
+    resizeLayout();
+    renderApp();
+  }
+  function tuningZoomBigger() {
+    config.ui.scaleBlobSize = Math.min(80, config.ui.scaleBlobSize * 1.25);
+    resizeLayout();
+    renderApp();
+  }
+  
   function addTuningDlg() {
 
     let selectedNoteCount = 0;
@@ -1040,9 +1054,6 @@ app = () => {
   
   // Resizing and layout
   function resizeAppViewport() {
-    if (env.debug.resize)
-      logInfo('resizeAppViewport() ' + '-'.repeat(10))
-
     let b = getElement('body')
     geometry.resizeDirty = (geometry.width !== b.offsetWidth) || (geometry.height == b.offsetHeight)
 
@@ -1053,21 +1064,19 @@ app = () => {
       resizeLayout()
       renderApp()
     }
-    if (env.debug.resize)
-      logInfo('resizeAppViewport() geometry:', geometry)
   }
   function resizeLayout() {
-    // modifies: g
-    const scaleSmall = (config.ui.scaleTuningSize / 24) * 0.8;
-    const scale = (config.ui.scaleTuningSize / 24) * 1.0;
-    adjustCSSRules('.tuning-point-label', `font-size: ${scaleSmall}rem`);
-    adjustCSSRules('.tuning-point-number-ratio', `font-size: ${scale}rem`);
-    adjustCSSRules('.tuning-point-number', `font-size: ${scale}rem`);
+    // modifies: g and stylesheet
+    const scaleSmall = config.ui.scaleBlobSize * 0.5;
+    const scale = config.ui.scaleBlobSize * 0.7;
+    adjustCSSRules('.tuning-point-label', `font-size: ${scaleSmall}px;`);
+    adjustCSSRules('.tuning-point-number-ratio', `font-size: ${scale}px;`);
+    adjustCSSRules('.tuning-point-number', `font-size: ${scale}px;`);
     g.pageMargin = {
-      top: s.pageMargin.top * config.ui.scaleTuningSize,
-      right: s.pageMargin.right * config.ui.scaleTuningSize,
-      bottom: s.pageMargin.bottom * config.ui.scaleTuningSize,
-      left: s.pageMargin.left * config.ui.scaleTuningSize,
+      top: s.pageMargin.top * config.ui.textSize,
+      right: s.pageMargin.right * config.ui.scaleBlobSize,
+      bottom: s.pageMargin.bottom * config.ui.textSize,
+      left: s.pageMargin.left * config.ui.textSize,
     }
   }
   function adjustCSSRules(selector, props, sheets){
@@ -1119,6 +1128,26 @@ app = () => {
       </g>
     </svg>
   `);
+  const iconTuningZoomSmaller = () => (`
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+      viewBox="0 0 100 100"
+      >
+      <g>
+        <path class="iconPath-lines" d="M40,45 L70,45z M10,90 L30,70" />
+        <circle class="iconPath-lines" cx="55" cy="45" r="35" />
+      </g>
+    </svg>
+  `);
+  const iconTuningZoomBigger = () => (`
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+      viewBox="0 0 100 100"
+      >
+      <g>
+      <path class="iconPath-lines" d="M40,45 L70,45z M55,30 L55,60z M10,90 L30,70z" />
+      <circle class="iconPath-lines" cx="55" cy="45" r="35" />
+    </g>
+    </svg>
+  `);
   const iconHelp = (active) => (`
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
       viewBox="0 0 10000 10000"
@@ -1129,7 +1158,7 @@ app = () => {
     </svg>
   `);
 // Icons: SVG fragments
-  const addViewZoomIcons = () => {
+  const addTuningViewRangeIcons = () => {
     const html = [];
 
     ref.scaleViewIcons.forEach(iconSpec => {
@@ -1157,6 +1186,7 @@ app = () => {
       // return `${iconSpec.label}`;
     }
   }
+
   const toolbarTools = () => {
     const startItem = '<div class="item">';
     const endItem = '</div>';
@@ -1167,6 +1197,20 @@ app = () => {
         title="${ref.uiStrings.addTuning}"
       >${iconAddTuning()}</button>
     `;
+    const tuningZoomSmallerIcon = `
+      <button
+        class="icon add"
+        onclick="ui.tuningZoomSmaller();"
+        title="${ref.uiStrings.tuningZoomSmaller}"
+      >${iconTuningZoomSmaller()}</button>
+    `;
+    const tuningZoomBiggerIcon = `
+      <button
+        class="icon add"
+        onclick="ui.tuningZoomBigger();"
+        title="${ref.uiStrings.tuningZoomBigger}"
+      >${iconTuningZoomBigger()}</button>
+    `;        
     const configIcon = `
       <button
         onclick="ui.showAppConfig(event);"
@@ -1182,21 +1226,17 @@ app = () => {
       >${iconHelp(uiState.showHelp)}</button>
     `;
 
-    /*
-    const selectRefLabel = `<label for="select-ref">Units</label><select id="select-ref">${ref.scaleViewLabels.map((i) => ('<option class="o1">' + i.label)).join('')}</select>`;
-    const selectRefScale = `<label for="select-ref">Scale</label><select id="select-ref"><option>Linear Harmonic</option><option selected>Octave</option></select>`;
-    */
     return [
       startItem,
         addTuningIcon,
       endItem,
       startItem,
-        addViewZoomIcons(),
+        tuningZoomSmallerIcon,
+        tuningZoomBiggerIcon,
       endItem,
-      //startItem,
-      //  selectRefLabel,
-      //  selectRefScale,        
-      //endItem,
+      startItem,
+        addTuningViewRangeIcons(),
+      endItem,
       startItem,
             configIcon,
         helpIcon,
@@ -1316,15 +1356,15 @@ app = () => {
         ${(note.isRatio && note.level <= config.noteShowLabelsBelowLevel) || (!note.isRatio && (note.label2 || note.hint)) ? `
           <g>
             <title>${note.hint || ''}</title>
-            <rect class="tuning-point-label-bg ${note.selected ? 'selected' : ''}" x="${x - config.ui.scaleTuningSize * 0.6}" y="${y + config.ui.scaleTuningSize * 0.15}" width="${config.ui.scaleTuningSize * 1.2}" height="${config.ui.scaleTuningSize * 0.8}" />
-            <text class="tuning-point-label pointer-transparent ${note.selected ? 'selected' : ''}" x="${x - 0.6}" y="${y + config.ui.scaleTuningSize * 0.75}">
+            <rect class="tuning-point-label-bg ${note.selected ? 'selected' : ''}" x="${x - config.ui.scaleBlobSize * 0.6}" y="${y + config.ui.scaleBlobSize * 0.15}" width="${config.ui.scaleBlobSize * 1.2}" height="${config.ui.scaleBlobSize * 0.8}" />
+            <text class="tuning-point-label pointer-transparent ${note.selected ? 'selected' : ''}" x="${x - 0.6}" y="${y + config.ui.scaleBlobSize * 0.75}">
               ${note.label2 || note.hint}
             </text>
           </g>
         `: ''}
 
-        <circle id="t${tuning.id}n${note.number}" class="tuning-point-number-bg ${note.selected ? 'selected' : ''}" cx="${x}" cy="${y + h + config.ui.scaleTuningSize * 0.60}" r="${config.ui.scaleTuningSize * 0.65}" onclick="ui.selectToggleNote({ tuningId: ${tuning.id}, noteNumber: ${note.number} })"/>
-        <text class="tuning-point-number${note.isRatio ? '-ratio' : ''} pointer-transparent ${note.selected ? 'selected' : ''}" x="${x - 0.5}" y="${y + h + config.ui.scaleTuningSize * 0.85}">
+        <circle id="t${tuning.id}n${note.number}" class="tuning-point-number-bg ${note.selected ? 'selected' : ''}" cx="${x}" cy="${y + h + config.ui.scaleBlobSize * 0.60}" r="${config.ui.scaleBlobSize * 0.65}" onclick="ui.selectToggleNote({ tuningId: ${tuning.id}, noteNumber: ${note.number} })"/>
+        <text class="tuning-point-number${note.isRatio ? '-ratio' : ''} pointer-transparent ${note.selected ? 'selected' : ''}" x="${x - 0.5}" y="${y + h + config.ui.scaleBlobSize * 0.85}">
           ${note.isRatio ? note.label : note.number}
         </text>
 
@@ -1348,9 +1388,9 @@ app = () => {
 
     // Blobs
     const lanes = [];
-    const laneHeight = config.ui.scaleTuningSize * 1.8;
+    const laneHeight = config.ui.scaleBlobSize * 1.8;
     const maxLanes = 3;
-    const normalizedClearance = 1.45 * config.ui.scaleTuningSize / (x2 - x1);
+    const normalizedClearance = 1.45 * config.ui.scaleBlobSize / (x2 - x1);
     let offsetY = 0; // temp
 
     const blobsSVG = positionsX.map(i => {
@@ -1383,7 +1423,7 @@ app = () => {
         x: i.scaledPositionX, y: 
         y1 + vo + offsetY, 
         w: tuningPointWidth, 
-        h: config.ui.scaleTuningSize,
+        h: config.ui.scaleBlobSize,
         selected: false, 
         note: i.note,
         tuning
@@ -1441,7 +1481,7 @@ app = () => {
       <g>
         <g>
           <title>${config.noteRefHz.toFixed(config.precisionRefHzHint)} Hz</title>
-          <text class="reference-freq" x="${refFreqX + config.ui.scaleTuningSize * 0.4}" y="${y1 - config.ui.scaleTuningSize * 0.57}">
+          <text class="reference-freq" x="${refFreqX + config.ui.textSize * 0.2}" y="${y1 - config.ui.textSize * 0.57}">
           ${config.noteRefHz.toFixed(config.precisionRefHz)} Hz
           </text>
         </g>
@@ -1477,7 +1517,7 @@ app = () => {
           <clipPath id="tuning-cp-${tuning.id}">
             <rect x="0" y="${y1}" width="${x1 - labelX}" height="${h}" />
           </clipPath>          
-          <text class="tuning-name pointer-transparent" x="${labelX}" y="${y1 + config.ui.scaleTuningSize * 0.5}" clip-path="url(#tuning-cp-${tuning.id})">
+          <text class="tuning-name pointer-transparent" x="${labelX}" y="${y1 + config.ui.textSize * 0.5}" clip-path="url(#tuning-cp-${tuning.id})">
             ${tuning.label}
           </text>
         </g>
@@ -1559,7 +1599,7 @@ app = () => {
       }
 
       function y(gridY) {
-        return y1 + config.ui.scaleTuningSize * 0.8 + gridSize * gridY;
+        return y1 + config.ui.textSize * 0.8 + gridSize * gridY;
       }
 
     }
@@ -1777,23 +1817,23 @@ app = () => {
     </div>
   `;
   function surfaceHTML() {
-    const tuningBoxHeight = config.ui.scaleTuningSize * 3;
-    const tuningNameWidthChars = 8;
-    const tuningNameWidth = config.ui.toolSize * 1.4 * 4; // config.ui.scaleTuningSize * tuningNameWidthChars * s.bodyRatio;
-    const tuningNameMargin = config.ui.scaleTuningSize;
+    const tuningBoxHeight = config.ui.scaleBlobSize * 3;
+    const tuningNameWidth = config.ui.toolSize * 1.4 * 4; // width of 4 'tuning toolbar buttons'
+    const tuningNameMargin = config.ui.scaleBlobSize;
     const tuningBoxX1 = g.pageMargin.left + tuningNameWidth + tuningNameMargin;
-    const referenceScaleTop = g.pageMargin.top + config.ui.scaleTuningSize * 0.2;
+    const referenceScaleTop = g.pageMargin.top + config.ui.scaleBlobSize * 0.2;
     let nextRowY = referenceScaleTop;  // position for next SVG element to continue the vertical flow
-    const tuningsHeight = nextRowY + (tuningBoxHeight + config.ui.scaleTuningSize * 1) * ( config.tunings.length - 1 ) + tuningBoxHeight; // todo: remove repeats of this
+    const tuningsHeight = nextRowY + (tuningBoxHeight + config.ui.scaleBlobSize * 1) * ( config.tunings.length - 1 ) + tuningBoxHeight; // todo: remove repeats of this
 
     let firstTuning = true;
     const tuningRows = config.tunings.map((tuning) => {
       thisRowY = nextRowY;
-      nextRowY += tuningBoxHeight + config.ui.scaleTuningSize * 1;
+      let additionalRowY = 0;
+      additionalRowY += tuningBoxHeight + config.ui.scaleBlobSize * 0.8;
 
       const tuningScale = tuningScaleSVG({
         x1: tuningBoxX1, 
-        x2: g.width - g.pageMargin.right - config.ui.scaleTuningSize * 0.5,  // allows for note circles
+        x2: g.width - g.pageMargin.right - config.ui.scaleBlobSize * 0.5,  // allows for note circles
         y1: thisRowY, 
         h: tuningBoxHeight,
         backgroundY2: tuningsHeight,
@@ -1801,7 +1841,8 @@ app = () => {
         firstTuning
       });
       firstTuning = false;
-      nextRowY += tuningScale.lanesHeight;
+      additionalRowY += tuningScale.lanesHeight;
+      nextRowY += Math.max(additionalRowY, config.ui.textSize + config.ui.toolSize * 1.4 * 2);
 
       return tuningScale.svg;
     }).join('');
@@ -1820,7 +1861,7 @@ app = () => {
       ${tuningRows}
     `;
 
-    const SVGHeight = nextRowY;
+    const SVGHeight = nextRowY - config.ui.scaleBlobSize * 0.2;
 
     const surfaceHTML = `
       <div class="rows">
@@ -1896,6 +1937,8 @@ app = () => {
     selectAllTuningNotes,
     removeSelectedNotes,
     scaleViewZoom,
+    tuningZoomSmaller,
+    tuningZoomBigger,
     changeAnalysisLimit,
     tuningPropertiesDlg,
     saveTuningProperties
