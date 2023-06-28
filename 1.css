@@ -17,24 +17,29 @@ body {
 	padding: 0;
 	margin: 0;
 	height: 100vh;
-	overflow: overlay;
+	overflow: auto;
+	overflow-x: clip;
 	font-family: 'Segoe UI', 'sans', 'Arial', 'Tahoma';
 }
 
 body::-webkit-scrollbar-track,
-body::-webkit-scrollbar-corner {
+body::-webkit-scrollbar-corner,
+div::-webkit-scrollbar-track,
+div::-webkit-scrollbar-corner {
     background-color: hsl(var(--hue), 30%, 10%);
 }
 body::-webkit-scrollbar-track {
 	-webkit-box-shadow: inset 0 0 var(--scrollbar-size) rgba(0, 0, 0, 0.3);
 }
-body::-webkit-scrollbar {
+body::-webkit-scrollbar,
+div::-webkit-scrollbar {
     width: var(--scrollbar-size);
     height: var(--scrollbar-size);
     background-color: hsl(var(--hue), 80%, 90%);
 }
 
-body::-webkit-scrollbar-thumb {
+body::-webkit-scrollbar-thumb,
+div::-webkit-scrollbar-thumb {
     background-color: hsl(var(--hue), 10%, 20%);
 }
 

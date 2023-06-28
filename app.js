@@ -1789,7 +1789,7 @@ app = () => {
     if (uiState.activeAnalysis == ref.analysisModes.NOTES) { analysis = analysisNoteIntervalsHTML() }
 
     return [
-      '<div class="textSection">',
+      '<div class="textSection" style="overflow-x: auto;">',
       analysis,
       '</div>'
     ].join('');
@@ -1881,7 +1881,7 @@ app = () => {
         </div>
         <div class="row">
           <div class="columns">
-            <div class="column" style="flex-basis: 100%;">
+            <div class="column" style="flex-basis: 100%; width: 100%;">
               ${analysisTabsHTML()}
               ${analysisHTML()}
             </div>
