@@ -1,4 +1,4 @@
-> This text is aligned to version 2023-06-030.
+> This text is aligned to version 2023-06-035.
 
 XeTune is an experimental visualiser and basic editor for multiple microtonal tunings. It runs in a web browser and doesn't need a server. You can use it at [https://johnvalentine.co.uk/app/xetune/app.html](https://johnvalentine.co.uk/app/xetune/app.html)
 
@@ -19,21 +19,20 @@ With XeTune, you can:
 
 # Feature requests and feedback
 
-I'm open to [feature requests](https://github.com/j5v/xetune/labels/enhancement), and have an unpublished backlog.
-I have no firm plans to publish XeTune on a repository, but it's a possibility in future.
+I'm open to [feature requests](https://github.com/j5v/xetune/labels/enhancement), and most of the backlog is written up as [issues](https://github.com/j5v/xetune/issues).
 
 # Dependencies and data use
 
-XeTune is a client-side web browser app, which has no external code dependencies other than standard browser APIs, no server dependency, and currently stores no data in the browser's local storage.
+XeTune is a client-side web browser app, which has no external code dependencies other than standard browser APIs, no server dependency.
 
 It has the ability to read files that you drop in, interpreting them as `.scl` (Scala) files, and can export `.scl` files as downloads.
 
-The XeTune app does not transmit nor collect your data, but it stores configuration data to localStorage, which can include user-entered data in tunings. Be aware that proprietary browsers, and browser plugins/extensions might transmit data.
+The XeTune app does not transmit nor collect your data, but it stores configuration data to localStorage, which can include user-entered data in tunings. Be aware that proprietary browsers, and browser plugins/extensions might read or transmit this data.
 
 # For developers
 
-I structured this prototype project as a monolith closure with published UI methods. Internally, code is grouped by functionalies like reference data, utilities, rendering, tuning calculations, and UI events. Concerns are not as fully separated as they should be, and I'm aware that there are better ways to organize a project.
+I structured this prototype project as a monolith closure with published UI methods. Internally, code is grouped by functionalies like reference data, utilities, rendering, tuning calculations, and UI events. Concerns are not as separated as they should be, and I'm aware that there are better ways to organize a project.
 
-It needs no preprocessing to run, but does need a full refresh to take new code changes (there's no live reload), which resets the internal state.
+The project needs no preprocessing to run, so there is no build process.
 
-The UI is composed using render functions, and often rendered wholesale to reflect updated state. This is efficient enough to be responsive to large and small changes.
+The UI is composed using render functions, and often rendered wholesale to reflect updated state. So far, this is efficient enough to be responsive to large and small changes.
