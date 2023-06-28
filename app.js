@@ -814,7 +814,7 @@ app = () => {
     renderApp();
   }
   function tuningZoomSmaller() {
-    config.ui.scaleBlobSize = Math.max(12, config.ui.scaleBlobSize * 0.8);
+    config.ui.scaleBlobSize = Math.max(18, config.ui.scaleBlobSize * 0.8);
     resizeLayout();
     renderApp();
   }
@@ -1821,7 +1821,7 @@ app = () => {
     const tuningNameWidth = config.ui.toolSize * 1.4 * 4; // width of 4 'tuning toolbar buttons'
     const tuningNameMargin = config.ui.scaleBlobSize;
     const tuningBoxX1 = g.pageMargin.left + tuningNameWidth + tuningNameMargin;
-    const referenceScaleTop = g.pageMargin.top + config.ui.scaleBlobSize * 0.2;
+    const referenceScaleTop = g.pageMargin.top;
     let nextRowY = referenceScaleTop;  // position for next SVG element to continue the vertical flow
     const tuningsHeight = nextRowY + (tuningBoxHeight + config.ui.scaleBlobSize * 1) * ( config.tunings.length - 1 ) + tuningBoxHeight; // todo: remove repeats of this
 
