@@ -114,6 +114,10 @@ app = () => {
     reference: { // TODO: serializable to .enum.
       scaleLabel: ref.scaleViewLabels[2],
     },
+    ui: {
+      scaleTuningSize: 24, // px. todo: get from browser default
+      toolSize: 24,
+    },
     noteRefHz: 440 * (Math.pow(2, -9/12)), // C, around 261 Hz // TODO: split to be configurable
     noteShowSubtleLinesBelowLevel: 5,
     noteShowLabelsBelowLevel: 3,
@@ -148,7 +152,6 @@ app = () => {
   }
 
   const s /* alias */ = textStyle = { // SVG text styles
-    bodySize: 24, // px todo: get from browser default
     bodyRatio: 0.5, // width, as a factor of height
     pageMargin: {
       top: 1.5,
@@ -1055,12 +1058,45 @@ app = () => {
   }
   function resizeLayout() {
     // modifies: g
+    const scaleSmall = (config.ui.scaleTuningSize / 24) * 0.8;
+    const scale = (config.ui.scaleTuningSize / 24) * 1.0;
+    adjustCSSRules('.tuning-point-label', `font-size: ${scaleSmall}rem`);
+    adjustCSSRules('.tuning-point-number-ratio', `font-size: ${scale}rem`);
+    adjustCSSRules('.tuning-point-number', `font-size: ${scale}rem`);
     g.pageMargin = {
-      top: s.pageMargin.top * s.bodySize,
-      right: s.pageMargin.right * s.bodySize,
-      bottom: s.pageMargin.bottom * s.bodySize,
-      left: s.pageMargin.left * s.bodySize,
+      top: s.pageMargin.top * config.ui.scaleTuningSize,
+      right: s.pageMargin.right * config.ui.scaleTuningSize,
+      bottom: s.pageMargin.bottom * config.ui.scaleTuningSize,
+      left: s.pageMargin.left * config.ui.scaleTuningSize,
     }
+  }
+  function adjustCSSRules(selector, props, sheets){
+    // from: https://jsfiddle.net/khrvndua/2/
+    
+    // get stylesheet(s)
+    if (!sheets) sheets = [...document.styleSheets];
+    else if (sheets.sup){    // sheets is a string
+        let absoluteURL = new URL(sheet, document.baseURI).href;
+        sheets = [...document.styleSheets].filter(i => i.href == absoluteURL);
+        }
+    else sheets = [sheets];  // sheets is a stylesheet
+        
+    // CSS (& HTML) reduce spaces to one. TODO: ignore quoted spaces.
+    selector = selector.replace(/\s+/g, ' ');
+    const findRule = s => [...s.cssRules].reverse().find(i => i.selectorText == selector)
+    let rule = sheets.map(findRule).filter(i=>i).pop()
+
+    const propsArr = props.sup 
+        ? props.split(/\s*;\s*/).map(i => i.split(/\s*:\s*/)) // from string
+        : Object.entries(props);                              // from Object
+            
+    if (rule) for (let [prop, val] of propsArr)
+        rule.style[prop] = val;
+    else {
+        sheet = sheets.pop();
+        if (!props.sup) props = propsArr.reduce((str, [k, v]) => `${str}; ${k}: ${v}`, '');
+        sheet.insertRule(`${selector} { ${props} }`, sheet.cssRules.length);
+      }
   }
 
   // === Rendering
@@ -1168,31 +1204,31 @@ app = () => {
     ].join('');
   }
   const iconRemove = (x, y) => `
-    <g class="icon-shape-outline pointer-transparent" transform="translate(${x + s.bodySize * 0.6} ${y + s.bodySize * 0.6}) scale(${s.bodySize * 0.008})">
+    <g class="icon-shape-outline pointer-transparent" transform="translate(${x + config.ui.toolSize * 0.6} ${y + config.ui.toolSize * 0.6}) scale(${config.ui.toolSize * 0.008})">
       <path class="iconPath-lines" d="M-30,30 L30,-30 M30,30 L-30,-30" />
     </g>
   `;
   const iconDownload = (x, y) => `
-    <g class="icon-shape-outline pointer-transparent" transform="translate(${x + s.bodySize * 0.6} ${y + s.bodySize * 0.6}) scale(${s.bodySize * 0.008})">
+    <g class="icon-shape-outline pointer-transparent" transform="translate(${x + config.ui.toolSize * 0.6} ${y + config.ui.toolSize * 0.6}) scale(${config.ui.toolSize * 0.008})">
       <path class="iconPath-lines" d="M-40,20 L-40,40 L40,40 L40,20 M0,-40 L0,20 M-30,-10 L0,20 L30,-10" />
     </g>
   `;
   const iconDuplicate = (x, y) => `
-    <g class="icon-shape-outline pointer-transparent" transform="translate(${x + s.bodySize * 0.6} ${y + s.bodySize * 0.56}) scale(${s.bodySize * 0.008})">
+    <g class="icon-shape-outline pointer-transparent" transform="translate(${x + config.ui.toolSize * 0.6} ${y + config.ui.toolSize * 0.56}) scale(${config.ui.toolSize * 0.008})">
       <rect class="iconPath-lines" x="-40" y="-35" width="60" height="60" rx="6" ry="6" style="opacity: 0.5" />
       <rect class="iconPath-filled-lines" x="-15" y="-10" width="60" height="60" rx="8" ry="8" />
       <path class="iconPath-lines" d="M15,5 L15,35 M0,20 L30,20" style="stroke-width: 7px"/>
     </g>
   `;
   const iconProperties = (x, y) => `
-    <g class="icon-shape-outline pointer-transparent" transform="translate(${x + s.bodySize * 0.6} ${y + s.bodySize * 0.6}) scale(${s.bodySize * 0.008})">
+    <g class="icon-shape-outline pointer-transparent" transform="translate(${x + config.ui.toolSize * 0.6} ${y + config.ui.toolSize * 0.6}) scale(${config.ui.toolSize * 0.008})">
       <circle class="iconPath" cx="-30" cy="40" r="10" />
       <circle class="iconPath" cx="-0" cy="40" r="10" />
       <circle class="iconPath" cx="30" cy="40" r="10" />
     </g>
   `;
   const iconRemoveSelectedNotes = (x, y) => `
-    <g class="pointer-transparent" transform="translate(${x} ${y}) scale(${s.bodySize * 0.012})">
+    <g class="pointer-transparent" transform="translate(${x} ${y}) scale(${config.ui.toolSize * 0.012})">
       <circle class="icon-shape-fill" cx="45" cy="45" r="22" style="opacity: 0.6;" />
       <circle class="icon-shape-fill" cx="55" cy="55" r="22" style="opacity: 0.8;"  />
       <path class="iconPath-lines" d="M41,56 L51,66 L69,48" style="stroke-width: 5px; opacity: 0.5;" />
@@ -1200,20 +1236,20 @@ app = () => {
     </g>
   `;
   const iconAddNote = (x, y) => `
-    <g class="pointer-transparent" transform="translate(${x} ${y}) scale(${s.bodySize * 0.012})">
+    <g class="pointer-transparent" transform="translate(${x} ${y}) scale(${config.ui.toolSize * 0.012})">
       <circle class="icon-shape-fill" cx="45" cy="55" r="25" />
       <path class="iconPath-lines" d="M80,20 L80,40 M70,30 L90,30" style="stroke-width: 5px" />
     </g>
   `;
   const iconSelectAll = (x, y) => `
-    <g class="pointer-transparent" transform="translate(${x} ${y}) scale(${s.bodySize * 0.012})">
+    <g class="pointer-transparent" transform="translate(${x} ${y}) scale(${config.ui.toolSize * 0.012})">
       <circle class="icon-shape-fill" cx="45" cy="45" r="22" style="opacity: 0.7;" />
       <circle class="icon-shape-fill" cx="55" cy="55" r="22" />
       <path class="iconPath-lines" d="M41,56 L51,66 L69,48" style="stroke-width: 5px" />
     </g>
   `;
   const iconUnselectAll = (x, y) => `
-    <g class="pointer-transparent" transform="translate(${x} ${y}) scale(${s.bodySize * 0.012})">
+    <g class="pointer-transparent" transform="translate(${x} ${y}) scale(${config.ui.toolSize * 0.012})">
       <circle class="icon-shape-fill" cx="45" cy="45" r="22" style="opacity: 0.7;" />
       <circle class="icon-shape-fill" cx="55" cy="55" r="22" />
     </g>
@@ -1241,11 +1277,11 @@ app = () => {
   const buttonSVG = ({ x, y, action, text = '', svg = '', className, hint }) => {
     const size = 1.2;
     const SVG = `
-      <rect role="button" class="buttonSVG ${className}" x="${x}" y="${y}" width="${s.bodySize * size}" height="${s.bodySize * size}" rx="4" onclick="${action}">
+      <rect role="button" class="buttonSVG ${className}" x="${x}" y="${y}" width="${config.ui.toolSize * size}" height="${config.ui.toolSize * size}" rx="4" onclick="${action}">
       <title>${hint || ''}</title>
       </rect>
-      ${svg}
-      <text class="tuning-point-number pointer-transparent" x="${x + s.bodySize * size * 0.5 }" y="${y + s.bodySize * size * 0.66}">
+      <g transform="scale(${config.ui.toolSize / 24})")>${svg}</g>
+      <text class="tuning-point-number pointer-transparent" x="${x + config.ui.toolSize * size * 0.5 }" y="${y + config.ui.toolSize * size * 0.66}">
        ${text}
       </text>
     `;// ref.buttons.REMOVE
@@ -1280,15 +1316,15 @@ app = () => {
         ${(note.isRatio && note.level <= config.noteShowLabelsBelowLevel) || (!note.isRatio && (note.label2 || note.hint)) ? `
           <g>
             <title>${note.hint || ''}</title>
-            <rect class="tuning-point-label-bg ${note.selected ? 'selected' : ''}" x="${x - s.bodySize * 0.6}" y="${y + s.bodySize * 0.15}" width="${s.bodySize * 1.2}" height="${s.bodySize * 0.8}" />
-            <text class="tuning-point-label pointer-transparent ${note.selected ? 'selected' : ''}" x="${x - 0.6}" y="${y + s.bodySize * 0.75}">
+            <rect class="tuning-point-label-bg ${note.selected ? 'selected' : ''}" x="${x - config.ui.scaleTuningSize * 0.6}" y="${y + config.ui.scaleTuningSize * 0.15}" width="${config.ui.scaleTuningSize * 1.2}" height="${config.ui.scaleTuningSize * 0.8}" />
+            <text class="tuning-point-label pointer-transparent ${note.selected ? 'selected' : ''}" x="${x - 0.6}" y="${y + config.ui.scaleTuningSize * 0.75}">
               ${note.label2 || note.hint}
             </text>
           </g>
         `: ''}
 
-        <circle id="t${tuning.id}n${note.number}" class="tuning-point-number-bg ${note.selected ? 'selected' : ''}" cx="${x}" cy="${y + h + s.bodySize * 0.60}" r="${s.bodySize * 0.65}" onclick="ui.selectToggleNote({ tuningId: ${tuning.id}, noteNumber: ${note.number} })"/>
-        <text class="tuning-point-number${note.isRatio ? '-ratio' : ''} pointer-transparent ${note.selected ? 'selected' : ''}" x="${x - 0.5}" y="${y + h + s.bodySize * 0.85}">
+        <circle id="t${tuning.id}n${note.number}" class="tuning-point-number-bg ${note.selected ? 'selected' : ''}" cx="${x}" cy="${y + h + config.ui.scaleTuningSize * 0.60}" r="${config.ui.scaleTuningSize * 0.65}" onclick="ui.selectToggleNote({ tuningId: ${tuning.id}, noteNumber: ${note.number} })"/>
+        <text class="tuning-point-number${note.isRatio ? '-ratio' : ''} pointer-transparent ${note.selected ? 'selected' : ''}" x="${x - 0.5}" y="${y + h + config.ui.scaleTuningSize * 0.85}">
           ${note.isRatio ? note.label : note.number}
         </text>
 
@@ -1312,9 +1348,9 @@ app = () => {
 
     // Blobs
     const lanes = [];
-    const laneHeight = s.bodySize * 1.8;
+    const laneHeight = config.ui.scaleTuningSize * 1.8;
     const maxLanes = 3;
-    const normalizedClearance = 1.45 * s.bodySize / (x2 - x1);
+    const normalizedClearance = 1.45 * config.ui.scaleTuningSize / (x2 - x1);
     let offsetY = 0; // temp
 
     const blobsSVG = positionsX.map(i => {
@@ -1347,7 +1383,7 @@ app = () => {
         x: i.scaledPositionX, y: 
         y1 + vo + offsetY, 
         w: tuningPointWidth, 
-        h: s.bodySize,
+        h: config.ui.scaleTuningSize,
         selected: false, 
         note: i.note,
         tuning
@@ -1405,7 +1441,7 @@ app = () => {
       <g>
         <g>
           <title>${config.noteRefHz.toFixed(config.precisionRefHzHint)} Hz</title>
-          <text class="reference-freq" x="${refFreqX + s.bodySize * 0.4}" y="${y1 - s.bodySize * 0.57}">
+          <text class="reference-freq" x="${refFreqX + config.ui.scaleTuningSize * 0.4}" y="${y1 - config.ui.scaleTuningSize * 0.57}">
           ${config.noteRefHz.toFixed(config.precisionRefHz)} Hz
           </text>
         </g>
@@ -1441,7 +1477,7 @@ app = () => {
           <clipPath id="tuning-cp-${tuning.id}">
             <rect x="0" y="${y1}" width="${x1 - labelX}" height="${h}" />
           </clipPath>          
-          <text class="tuning-name pointer-transparent" x="${labelX}" y="${y1 + s.bodySize * 0.5}" clip-path="url(#tuning-cp-${tuning.id})">
+          <text class="tuning-name pointer-transparent" x="${labelX}" y="${y1 + config.ui.scaleTuningSize * 0.5}" clip-path="url(#tuning-cp-${tuning.id})">
             ${tuning.label}
           </text>
         </g>
@@ -1456,7 +1492,7 @@ app = () => {
     function tuningStripButtons(params) {
       // row 1 (tuning) Remove, Download, Duplicate*, Properties*
       // row 2 (notes) Remove*, Add*, Select all, Deselect all, 
-      const gridSize = s.bodySize * 1.4;
+      const gridSize = config.ui.toolSize * 1.4;
 
       return `
         ${buttonSVG({ 
@@ -1523,7 +1559,7 @@ app = () => {
       }
 
       function y(gridY) {
-        return y1 + gridSize * 0.6 + gridSize * gridY;
+        return y1 + config.ui.scaleTuningSize * 0.8 + gridSize * gridY;
       }
 
     }
@@ -1741,23 +1777,23 @@ app = () => {
     </div>
   `;
   function surfaceHTML() {
-    const tuningBoxHeight = s.bodySize * 3;
-    const tuningNameWidthChars = 12;
-    const tuningNameWidth = s.bodySize * tuningNameWidthChars * s.bodyRatio;
-    const tuningNameMargin = s.bodySize;
+    const tuningBoxHeight = config.ui.scaleTuningSize * 3;
+    const tuningNameWidthChars = 8;
+    const tuningNameWidth = config.ui.toolSize * 1.4 * 4; // config.ui.scaleTuningSize * tuningNameWidthChars * s.bodyRatio;
+    const tuningNameMargin = config.ui.scaleTuningSize;
     const tuningBoxX1 = g.pageMargin.left + tuningNameWidth + tuningNameMargin;
-    const referenceScaleTop = g.pageMargin.top + s.bodySize * 0.2;
+    const referenceScaleTop = g.pageMargin.top + config.ui.scaleTuningSize * 0.2;
     let nextRowY = referenceScaleTop;  // position for next SVG element to continue the vertical flow
-    const tuningsHeight = nextRowY + (tuningBoxHeight + s.bodySize * 1) * ( config.tunings.length - 1 ) + tuningBoxHeight; // todo: remove repeats of this
+    const tuningsHeight = nextRowY + (tuningBoxHeight + config.ui.scaleTuningSize * 1) * ( config.tunings.length - 1 ) + tuningBoxHeight; // todo: remove repeats of this
 
     let firstTuning = true;
     const tuningRows = config.tunings.map((tuning) => {
       thisRowY = nextRowY;
-      nextRowY += tuningBoxHeight + s.bodySize * 1;
+      nextRowY += tuningBoxHeight + config.ui.scaleTuningSize * 1;
 
       const tuningScale = tuningScaleSVG({
         x1: tuningBoxX1, 
-        x2: g.width - g.pageMargin.right - s.bodySize * 0.5,  // allows for note circles
+        x2: g.width - g.pageMargin.right - config.ui.scaleTuningSize * 0.5,  // allows for note circles
         y1: thisRowY, 
         h: tuningBoxHeight,
         backgroundY2: tuningsHeight,
