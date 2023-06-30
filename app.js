@@ -1134,8 +1134,8 @@ app = () => {
       viewBox="0 0 100 100"
       >
       <g>
-        <path class="iconPath-lines" d="M40,45 L70,45z M10,90 L30,70" />
-        <circle class="iconPath-lines" cx="55" cy="45" r="35" />
+        <path class="iconPath-lines-narrower" d="M40,45 L70,45z M10,90 L30,70" />
+        <circle class="iconPath-lines-narrower" cx="55" cy="45" r="35" />
       </g>
     </svg>
   `);
@@ -1144,8 +1144,8 @@ app = () => {
       viewBox="0 0 100 100"
       >
       <g>
-      <path class="iconPath-lines" d="M40,45 L70,45z M55,30 L55,60z M10,90 L30,70z" />
-      <circle class="iconPath-lines" cx="55" cy="45" r="35" />
+      <path class="iconPath-lines-narrower" d="M40,45 L70,45z M55,30 L55,60z M10,90 L30,70z" />
+      <circle class="iconPath-lines-narrower" cx="55" cy="45" r="35" />
     </g>
     </svg>
   `);
