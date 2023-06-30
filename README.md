@@ -1,6 +1,8 @@
-> This text is aligned to version 2023-06-035.
+> This text is aligned to version 2023-06-038.
 
-XeTune is an experimental visualiser and basic editor for multiple microtonal tunings. It runs in a web browser and doesn't need a server. You can use it at [https://johnvalentine.co.uk/app/xetune/app.html](https://johnvalentine.co.uk/app/xetune/app.html)
+XeTune is a visualiser and basic editor for multiple microtonal tunings.
+
+You can use it at [https://johnvalentine.co.uk/app/xetune/app.html](https://johnvalentine.co.uk/app/xetune/app.html), or run it from your computer without a web server.
 
 With XeTune, you can:
 - Create new tunings:
@@ -8,18 +10,20 @@ With XeTune, you can:
   - Ratios within integer limits.
   - Compose from selected notes in other tunings.
 - View many tunings together, over a range of up to four octaves, including an octave of subharmonics.
+  - Edit the name and description of tunings.
   - Duplicate tunings.
-  - Remove tunings (from the view) and remove notes from tunings.
-  - Edit in detail in the JSON Configuration (we don't recommend this, but you can).
+  - Remove tunings.
   - Select notes among tunings, and:
     - View their intervals, as cents and relative errors to ratios.
     - Copy notes into a new tuning.
-- Import .scl (Scala format) files as a tuning, via drag-and-drop.
-- Export tunings as .scl files, via download.
+    - Remove notes from tunings.
+  - Edit the configuration as JSON (we don't recommend this, but you can).
+- Drag-and-drop `.scl` (Scala format) files.
+- Download tunings as `.scl` files.
 
 # Feature requests and feedback
 
-I'm open to [feature requests](https://github.com/j5v/xetune/labels/enhancement), and most of the backlog is written up as [issues](https://github.com/j5v/xetune/issues).
+I'm open to [feature requests](https://github.com/j5v/xetune/labels/enhancement), and most of the backlog is in [issues](https://github.com/j5v/xetune/issues).
 
 # Dependencies and data use
 
