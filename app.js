@@ -30,6 +30,7 @@ app = () => {
       addTuning: 'Add tuning',
       duplicateTuning: 'Duplicate tuning',
       tuningProperties: 'Tuning properties',
+      tuningPromote: 'Promote as reference',
       removeSelectedTuningNotes: 'Remove selected notes',
       addTuningNote: 'Add a note',
       selectAllTuningNotes: 'Select all notes',
@@ -973,6 +974,15 @@ app = () => {
 
     showModal(modalContent);
   }  
+  function tuningPromote(tuningId) {
+    const tuning = config.tunings.find((i) => (i.id == tuningId));
+    if (tuning) {
+      const foundIndex = config.tunings.indexOf(tuning);
+      config.tunings.splice(foundIndex, 1); // remove
+      config.tunings.splice(0, 0, tuning); // insert at top
+      renderApp();
+    }
+  }
   function saveTuningProperties(tuningId) {
     const tuning = config.tunings.find((i) => (i.id == tuningId));
 
@@ -1266,6 +1276,14 @@ app = () => {
       <circle class="iconPath" cx="-30" cy="40" r="10" />
       <circle class="iconPath" cx="-0" cy="40" r="10" />
       <circle class="iconPath" cx="30" cy="40" r="10" />
+    </g>
+  `;
+  const iconPromote = (x, y) => `
+    <g class="icon-shape-outline pointer-transparent" transform="translate(${x + config.ui.toolSize * 0.6} ${y + config.ui.toolSize * 0.6}) scale(${config.ui.toolSize * 0.008})">
+      <rect class="iconPath-lines" x="-30" y="-10" width="60" height="60" rx="8" ry="8" />
+      <rect class="buttonSVG" x="-10" y="-40" width="20" height="60" />
+      <path class="iconPath-lines-narrower" d="M10,-25 L0,-45 L-10,-25z M0,-40 L0,20" />
+      <path class="iconPath-lines-narrower" d="M-15,-50 L-50,-50 M15,-50 L50,-50" stroke-dasharray="4,4" />
     </g>
   `;
   const iconRemoveSelectedNotes = (x, y) => `
@@ -1564,6 +1582,13 @@ app = () => {
           className: 'download',  // not used?
           hint: ref.uiStrings.tuningProperties
         })}
+        ${firstTuning ? '' : buttonSVG({ 
+          x: x(4), y: y(0),
+          action: 'ui.tuningPromote(' + tuning.id + ')', 
+          svg: iconPromote(x(4), y(0)), 
+          className: 'promote',  // not used?
+          hint: ref.uiStrings.tuningPromote
+        })}
 
         ${buttonSVG({ 
           x: x(0), y: y(1),
@@ -1819,7 +1844,7 @@ app = () => {
   `;
   function surfaceHTML() {
     const tuningBoxHeight = config.ui.scaleBlobSize * 3;
-    const tuningNameWidth = config.ui.toolSize * 1.4 * 4; // width of 4 'tuning toolbar buttons'
+    const tuningNameWidth = config.ui.toolSize * 1.4 * 5; // width of 4 'tuning toolbar buttons'
     const tuningNameMargin = config.ui.scaleBlobSize;
     const tuningBoxX1 = g.pageMargin.left + tuningNameWidth + tuningNameMargin;
     const referenceScaleTop = g.pageMargin.top;
@@ -1937,6 +1962,7 @@ app = () => {
     downloadTuning,
     removeTuning,
     tuningPropertiesDlg,
+    tuningPromote,
     saveTuningProperties,
     toggleTuningSelection,
     selectAnalysisNoteProperties,
