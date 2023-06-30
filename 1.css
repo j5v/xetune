@@ -243,6 +243,11 @@ hr {
 	stroke: hsl(var(--hue), 90%, 80%);
 	fill: none;
 }
+.iconPath-lines-narrower {
+	stroke-width: 0.4rem;
+	stroke: hsl(var(--hue), 90%, 80%);
+	fill: none;
+}
 .iconPath-filled-lines {
 	stroke-width: 0.6rem;
 	stroke: hsl(var(--hue), 90%, 80%);
