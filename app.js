@@ -5,16 +5,17 @@ app = () => {
 
   const env = { // Environment config
     devBuild: true,
-    omitLogo: true, // change/remove if taken into the Surge project.
     debug: { // true = show debug messages in the console.``
-      general: true
+      general: true,
+      objects: false,
+      localStorage: false,
+      primeLimit: false
     }
   }
 
   const ref = { // Reference data
     title: 'XeTune',
-    version: '2023.06.038', // YYYY.MM.<release version> - increment for each release, after changes to code, data, or documentation.
-    logo: '', // TODO: logo design?
+    version: '2023.06.039', // YYYY.MM.<release version> - increment for each release, after changes to code, data, or documentation.
     uiStrings: {
       featureNotAvailable: 'This feature is not yet available',
       configure: 'Configure',
@@ -665,13 +666,13 @@ app = () => {
     const ratios = []; // Push results here
 
     generatePrimePowers();
-    if (env.debug.general) log('dimensions:', dimensions);
+    if (env.debug.primeLimit) log('dimensions:', dimensions);
 
     let combinationCount = dimensions.reduce( // works for nonuniform [].max
       (accumulator, currentValue) => (accumulator * (currentValue.max + 1)),
       1
     );
-    if (env.debug.general) log(
+    if (env.debug.primeLimit) log(
       'n or m combinationCount:', combinationCount,
       '(n, m) combinationCount:', combinationCount * combinationCount
     );
@@ -680,7 +681,7 @@ app = () => {
     while (k < combinationCount * combinationCount) {
       addRatio(); // Calculate and store n, m, ratio
 
-      // if (env.debug.general) log({ // all counters
+      // if (env.debug.primeLimit) log({ // all counters
       //   di: dimensions.map(d => d.i).toString(), 
       //   dj: dimensions.map(d => d.j).toString()
       // });
@@ -690,7 +691,7 @@ app = () => {
       k++;
     }
 
-    if (env.debug.general) log(ratios);
+    if (env.debug.primeLimit) log(ratios);
 
     return ratios;
 
@@ -1799,7 +1800,7 @@ app = () => {
   const toolbarHTML = (contentsOnly) => (
     ((!contentsOnly) ? '<div class="toolbar">' : '')
     + `
-      <div class="title">${(env.omitLogo ? '' : ref.logo + ' ')}${ref.title}</div>
+      <div class="title">${ref.title}</div>
       ${toolbarTools()}
     `
     + ((!contentsOnly) ? '</div>' : '')
@@ -1910,12 +1911,13 @@ app = () => {
     geometry.resizeDirty = false
   }
 
-  // report debug flags
+  // Report debug flags
   if (env.devBuild) {
-    log('Log flags: ' + Object.keys(env.debug).filter((i) => env.debug[i]).join(', '));
+    log('Enabled log flags: ' + Object.keys(env.debug).filter((i) => env.debug[i]).join(', '));
+    log('Available log flags: ' + Object.keys(env.debug).filter((i) => !env.debug[i]).join(', '));
     logInfo('If the current configuration causes errors, type ui.clearLocalStorage() then refresh the page.');
   }
-  // return interface
+  // Return interface
   let interface = { // UI interface
     init,
 		renderApp,
