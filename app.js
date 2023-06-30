@@ -1957,4 +1957,4 @@ app = () => {
   return interface;
 }
 
-ui = appxx();
+ui = app();
