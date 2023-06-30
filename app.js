@@ -1916,6 +1916,7 @@ app = () => {
     logInfo(`${ref.title} is running in developer mode, which might display logging information in the console.`);
     log('Enabled log flags: ' + Object.keys(env.debug).filter((i) => env.debug[i]).join(', '));
     log('Available log flags: ' + Object.keys(env.debug).filter((i) => !env.debug[i]).join(', '));
+    logInfo('Set logging flags with `ui.env.debug.<flag name> = true`');
     logInfo('If the current configuration causes errors, type ui.clearLocalStorage() then refresh the page.');
   }
   // Return interface
