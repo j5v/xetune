@@ -5,11 +5,25 @@
 		<title>XeTune</title>
 		<meta name="description" content="XeTune is a visualiser, analyzer, and basic editor, for multiple microtonal tunings. It runs in a web browser and doesn't need a server.">
 		<script src="app.js"></script>
+		<style>
+			li { line-height: 2rem; }
+			#startup-message { animation: appear 2s; }
+			@keyframes appear {
+				0%   { opacity: 0; }
+				90%  { opacity: 0; }
+				100% { opacity: 1; }
+			}
+		</style>
 	</head>
 	<body id="body" onload="ui.init();">
-		<div class="modal-row">
+		<div id="startup-message" class="modal-row">
 			<p>XeTune is starting...</p>
-			<p>If this message doesn't go away, try <button class="warn" onclick="ui.clearLocalStorage()">Reset configuration to defaults</button></p>
+			<p>If this message doesn't go away:</p>
+				<ol>
+					<li>Check your connection to XeTune.</li>
+					<li>For developers, check your browser console for errors.</li>
+					<li>Try <button class="warn" onclick="ui.clearLocalStorage()">Reset configuration</button> to restore defaults.</li>
+				</ol>
 		</div>
 	</body>
 <html>
