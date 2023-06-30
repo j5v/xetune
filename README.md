@@ -12,6 +12,7 @@ With XeTune, you can:
 - View many tunings together, over a range of up to four octaves, including an octave of subharmonics.
   - Edit the name and description of tunings.
   - Duplicate tunings.
+  - Promote a tuning as reference.
   - Remove tunings.
   - Select notes among tunings, and:
     - View their intervals, as cents and relative errors to ratios.
