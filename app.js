@@ -15,7 +15,7 @@ app = () => {
 
   const ref = { // Reference data
     title: 'XeTune',
-    version: '2023.06.039', // YYYY.MM.<release version> - increment for each release, after changes to code, data, or documentation.
+    version: '2023.07.001', // YYYY.MM.<release version> - increment for each release, after changes to code, data, or documentation.
     uiStrings: {
       featureNotAvailable: 'This feature is not yet available',
       configure: 'Configure',
@@ -148,9 +148,8 @@ app = () => {
     activeAnalysis: ref.analysisModes.NOTES,
     addTuningScaleType: 2, // ED
     addTuningBase: 2, // EDO
-    scaleView: {
-
-    }
+    lastTouchedNote: undefined, // object
+    lastTouchedTuning: undefined // object
   }
 
   const api = { // Dynamic state. Don't serialize
@@ -1011,17 +1010,17 @@ app = () => {
     }
     renderApp();
   }
-  function selectToggleNote({ tuningId, noteNumber }) {
-    
-    let foundNote;
+  function selectToggleNote({ tuningId, noteNumber, ctrl }) {
 
     const foundTuning = config.tunings.find(tuning => tuning.id == tuningId);
     if (foundTuning) {
-      foundNote = foundTuning.notes.find(note => note.number == noteNumber);
-    }
-    if (foundNote) {
-      foundNote.selected = !foundNote.selected;
-      renderApp();
+      const foundNote = foundTuning.notes.find(note => note.number == noteNumber);
+      if (foundNote) {
+        if (!ctrl) foundNote.selected = !foundNote.selected; // pressing ctrl/Cmd prevents toggle
+        uiState.lastTouchedNote = foundNote;
+        uiState.lastTouchedTuning = foundTuning;
+        renderApp();
+      }
     }
   }
   function selectAllTuningNotes(tuningId) {
@@ -1382,7 +1381,7 @@ app = () => {
           </g>
         `: ''}
 
-        <circle id="t${tuning.id}n${note.number}" class="tuning-point-number-bg ${note.selected ? 'selected' : ''}" cx="${x}" cy="${y + h + config.ui.scaleBlobSize * 0.60}" r="${config.ui.scaleBlobSize * 0.65}" onclick="ui.selectToggleNote({ tuningId: ${tuning.id}, noteNumber: ${note.number} })"/>
+        <circle id="t${tuning.id}n${note.number}" class="tuning-point-number-bg ${note.selected ? 'selected' : ''}" cx="${x}" cy="${y + h + config.ui.scaleBlobSize * 0.60}" r="${config.ui.scaleBlobSize * 0.65}" onclick="ui.selectToggleNote({ tuningId: ${tuning.id}, noteNumber: ${note.number}, ctrl: event.ctrlKey })"/>
         <text class="tuning-point-number${note.isRatio ? '-ratio' : ''} pointer-transparent ${note.selected ? 'selected' : ''}" x="${x - 0.5}" y="${y + h + config.ui.scaleBlobSize * 0.85}">
           ${note.isRatio ? note.label : note.number}
         </text>
@@ -1680,8 +1679,41 @@ app = () => {
     return `<p>Interval analysis of two tunings: ${tunings.map(tuning => tuning.label).join(', ')}.</p><p class="not-available">${ref.uiStrings.featureNotAvailable}.</p>`;
   }
   const analysisNotePropertiesHTML = () => {
-    // show properties for the last-touched note.
-    return `<p>Properties of last-touched note.</p><p class="not-available">${ref.uiStrings.featureNotAvailable}.</p>`;
+    const html = [];
+    const none = '<span class="subtle">&mdash;</span>';
+    const sep = '<span class="subtle"> &ndash; </span>';
+    
+    if (uiState.lastTouchedNote) {
+      // show properties for the last-touched note.
+      const n = uiState.lastTouchedNote; // alias
+      const t = uiState.lastTouchedTuning; // alias
+
+      // Build text description
+      const text = [];
+      if (n.label2) text.push(n.label2);
+      if (n.hint) text.push(n.hint);
+
+      html.push(`<p>
+      <span class="tuning-name-inline" style="margin-right: 0.7rem;">${t.label}</span>
+      ${!n.isRatio ? noteDisplayName({ t, n }) : ''}
+      <span class="note-number-inline" style="margin-right: 0.7rem;">${n.isRatio ? n.label : n.number}</span>
+      ${text.join(sep)}
+      </p>`);
+
+      // Build table of properties
+      html.push('<table>');
+      html.push(`<tr><th>ID</th><td>${n.number}</td></tr>`);
+      html.push(`<tr><th>Frequency</th><td title="${n.frequency.toFixed(config.precisionRefHzHint)} Hz">${n.frequency.toFixed(config.precisionRefHz)} Hz</td></tr>`);
+      html.push(`<tr><th>Octaves</th><td title="${n.octaves.toFixed(config.precisionRefHzHint)}">${n.octaves.toFixed(config.precisionRefHz)}</td></tr>`);
+      html.push(`<tr><th>Cents</th><td title="${n.centsET12.toFixed(config.precisionDiffCentsHint)}">${n.centsET12.toFixed(config.precisionDiffCents)}</t></tr>`);
+
+      html.push(`<tr><th>Ratio</th><td>${n.n && n.m ? n.n + ' / ' + n.m : none}</td></tr>`);
+      html.push('</table>');
+
+    } else {
+      html.push('<p>Touch a note to view its properties.</p>');
+    }
+    return html.join('');
   }  
   const analysisNoteIntervalsHTML = () => {
     // create a list of selected notes from all tunings, as { tuning, note } pairs
