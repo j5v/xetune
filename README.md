@@ -19,7 +19,7 @@ With XeTune, you can:
     - Copy notes into a new tuning.
     - Remove notes from tunings.
   - Edit the configuration as JSON (we don't recommend this, but you can).
-- View properties for the last-selected note. Hold Ctrl/Cmd to avoid toggling notes.
+- View properties for the last-selected note.
 - Drag-and-drop `.scl` (Scala format) files.
 - Download tunings as `.scl` files.
 

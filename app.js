@@ -1712,6 +1712,7 @@ app = () => {
 
     } else {
       html.push('<p>Touch a note to view its properties.</p>');
+      html.push('<p class="subtle">To preserve note selection, hold Ctrl or Cmd.</p>');
     }
     return html.join('');
   }  
