@@ -1,4 +1,4 @@
-> This text is aligned to version 2023-06-038.
+> This text is aligned to version 2023-07.001.
 
 XeTune is a visualiser and basic editor for multiple microtonal tunings.
 
@@ -19,6 +19,7 @@ With XeTune, you can:
     - Copy notes into a new tuning.
     - Remove notes from tunings.
   - Edit the configuration as JSON (we don't recommend this, but you can).
+- View properties for the last-selected note. Hold Ctrl/Cmd to avoid toggling notes.
 - Drag-and-drop `.scl` (Scala format) files.
 - Download tunings as `.scl` files.
 
