@@ -15,7 +15,7 @@ app = () => {
 
   const ref = { // Reference data
     title: 'XeTune',
-    version: '2023.07.001', // YYYY.MM.<release version> - increment for each release, after changes to code, data, or documentation.
+    version: '2023.07.002', // YYYY.MM.<release version> - increment for each release, after changes to code, data, or documentation.
     uiStrings: {
       featureNotAvailable: 'This feature is not yet available',
       configure: 'Configure',
@@ -1517,7 +1517,7 @@ app = () => {
     const noteLines = noteLinesSVG({x1, x2, y1, y2: y1 + h, h, tuning, backgroundY2, firstTuning});
 
     const svg = `
-      <g>
+      <g role="listitem" id="tuning-${tuning.id}" aria-labelledby="tuning-label-${tuning.id}">
         <path class="tuning-scale-selection" onclick="ui.toggleTuningSelection(${tuning.id})" d="
           M${0},${y1 + h + noteLines.lanesHeight}
           L${0},${y1}
@@ -1531,7 +1531,7 @@ app = () => {
           L${x2},${y1 + h + noteLines.lanesHeight}
           " />
         <g>
-          <title>${tuning.label}</title>
+          <title id="tuning-label-${tuning.id}">${tuning.label}</title>
           <clipPath id="tuning-cp-${tuning.id}">
             <rect x="0" y="${y1}" width="${x1 - labelX}" height="${h}" />
           </clipPath>          
@@ -1539,7 +1539,10 @@ app = () => {
             ${tuning.label}
           </text>
         </g>
-        ${tuningStripButtons()}          
+        <g>
+          <title>Tuning toolbar</title>
+          ${tuningStripButtons()}          
+        </g>
         }
         ${noteLines.svg}
       </g>
@@ -1907,6 +1910,7 @@ app = () => {
     }).join('');
 
     const tuningSVG = (config.tunings.length == 0) ? '' : `
+      <title>Tunings</title>
       ${referenceScaleSVG({
         x1: tuningBoxX1, 
         x2: g.width - g.pageMargin.right * 2, 
@@ -1929,6 +1933,8 @@ app = () => {
             <div class="column">
 
               <svg id="tuning"
+                role="list"
+                tabindex="0"
                 version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                 viewBox="0 0 ${g.width} ${SVGHeight}"
                 style="width: ${g.width}px; height: ${SVGHeight}px;"
